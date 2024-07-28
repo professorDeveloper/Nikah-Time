@@ -229,6 +229,7 @@ class ChatMainPageState extends State<ChatMainPage>
           ),
           Container(
             height: 124,
+            margin: const EdgeInsets.symmetric(horizontal: 1.0), // Adjust margin here
             padding: EdgeInsets.symmetric(vertical: 5),
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
