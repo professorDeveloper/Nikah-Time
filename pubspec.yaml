@@ -1,0 +1,147 @@
+name: untitled
+description: A new Flutter project.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.1.9+40
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  intl_phone_number_input: ^0.7.0+2
+  carousel_slider: ^4.0.0
+  flutter_svg: ^2.0.7
+  provider: ^6.0.0
+  google_fonts: any
+  pin_code_fields: ^8.0.1
+  dropdown_plus: ^0.0.9
+  image_picker: ^1.0.0
+  file_picker: ^5.0.1
+  flutter_tags: "^1.0.0-nullsafety.1"
+  flutter_typeahead: any
+  font_awesome_flutter: ^10.5.0
+  customizable_multiselect_field:
+    path: ./packages/customizable_multiselect_field
+  intl: ^0.19.0
+  socket_io_client: ^1.0.1
+  laravel_echo2: ^0.0.1
+  url_launcher: ^6.0.12
+  video_player: ^2.2.6
+  photo_view: ^0.14.0
+  sign_in_with_apple: ^5.0.0
+  shared_preferences: ^2.0.8
+  google_sign_in: ^6.1.4
+  path_provider: ^2.0.7
+  firebase_core: ^2.14.0
+  firebase_messaging: ^14.6.4
+  firebase_core_platform_interface: ^4.8.0
+  flutter_email_sender: ^6.0.1
+  easy_localization: ^3.0.0
+  lottie: ^2.4.0
+
+  transparent_image: ^2.0.0
+#  new_version: ^0.3.1
+#  in_app_update: ^4.1.4
+#  package_info_plus: any
+
+  flutter_bloc: ^8.0.1
+  equatable: ^2.0.0
+
+  dio: ^5.2.1+1
+  json_annotation: ^4.0.1
+
+  #modal_bottom_sheet: ^2.0.1
+
+  infinite_scroll_pagination: ^3.2.0
+
+  webview_flutter: ^3.0.4
+
+  in_app_purchase: ^3.0.8
+
+  sliver_tools: ^0.2.8
+
+  flutter_app_badger: ^1.5.0
+
+  mytracker_sdk:
+    git:
+      url: https://github.com/myTrackerSDK/mytracker-flutter
+      path: sdk/
+      ref: main
+  flutter_contacts: ^1.1.7+1
+  permission_handler: ^11.3.1
+  menu_bar: ^0.5.3
+  custom_pop_up_menu_fork: ^2.0.0
+
+dev_dependencies:
+  json_serializable: ^6.2.0
+  build_runner: ^2.0.4
+
+  flutter_test:
+    sdk: flutter
+
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.2
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/icons/about_app_features/filters.png
+    - assets/icons/about_app_features/people.png
+    - assets/icons/about_app_features/chating.png
+    - assets/icons/gamepad.png
+    - assets/icons/arrow_back.svg
+    - assets/icons/arrow_back.png
+    - assets/icons/aboutU.png
+    - assets/icons/confirmation.png
+    - assets/icons/people_filters.png
+    - assets/icons/placeholder_for_favorite_card.jpg
+    - assets/icons/mansPhoto.jpg
+    - assets/icons/press.jpg
+    - assets/icons/splash_static_item.png
+    - assets/icons/splash_static_item_en.png
+    - assets/icons/match_background.png
+    - assets/icons/spark1.png
+    - assets/icons/spark2.png
+    - assets/icons/spark3.png
+    - assets/icons/likeAnimation.json
+    - assets/icons/pattern.png
+    - assets/translations/
+    - assets/icons/apple_pay_logo.png
+    - assets/icons/background_image.png
+    - assets/icons/
+
+  fonts:
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Rubik-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Rubik-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Rubik-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Rubik-Italic.ttf
+          style: italic
+
+    - family: MainPageCustomIcon
+      fonts:
+        - asset: assets/fonts/MainPageCustomIcon.ttf

@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by Дмитрий Зайцев on 18.02.2022.
+  
+*/
+
+NSCameraUsageDescription = "Allow access to take photos and record videos to upload to your profile or to share in your chats";
+SMicrophoneUsageDescription = "Allow access to record video";
+NSPhotoLibraryUsageDescription = "Allow access to upload photos and videos to your profile or to upload to share in your chats";
+

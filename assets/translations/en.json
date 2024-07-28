@@ -1,0 +1,540 @@
+{
+    "app_locale": "en",
+    "usersScreen": {
+        "tittle": "Users",
+        "loading": "Wait, user profiles are being loaded",
+        "notFound": "Unfortunately, no one is here yet",
+        "searchNotFound": "Unfortunately, we can't find any user",
+        "searchHint": "Input search value here",
+        "searchMainHint": "To search for users, you must enter the first or last name in the search bar",
+        "match": {
+            "male": "{firstName} likes you too!\nYou can be the first to write.",
+            "female": "{firstName} likes you too!\nYou can be the first to write.",
+            "": "{firstName} likes you too!\nYou can be the first to write."
+        },
+        "writeMessage": "Write a message",
+        "continueViewing": "Continue browsing",
+        "selectedForYou": "Chosen for you",
+        "favorites": "Favorites",
+        "youFavorite": "You Favourite",
+        "liked": "I liked by"
+    },
+    "user": {
+        "hide": "Hide",
+        "more": "More",
+        "firstName": "Name",
+        "lastName": "Last Name",
+        "age": "Age",
+        "yearsCount": {
+            "zero": "{} y.o.",
+            "one": "{} y.o.",
+            "two": "{} y.o.",
+            "few": "{} y.o.",
+            "many": "{} y.o.",
+            "other": "{} y.o."
+        },
+        "gender": {
+            "title": "Gender",
+            "male": "Male",
+            "female": "Female"
+        },
+        "interests": "Interests",
+        "aboutMe": "About",
+        "education": "Education",
+        "placeOfStudy": "Place of study",
+        "birthDate": "Birth date",
+        "country": "Country",
+        "city": "City",
+        "contactPhoneNumber": "Contact phone number",
+        "placeOfWork": "Place of work",
+        "workPosition": "Work Position",
+        "maritalStatus": "Marital status",
+        "faith": "Possibility of moving",
+        "canons": "Faith",
+        "haveChildren": {
+            "title": "Children",
+            "hint": "Are there children?",
+            "yes": "Yes",
+            "no": "No"
+        },
+        "badHabits": "Bad habits",
+        "nationality": "Nationality",
+        "photos": "Photos"
+    },
+    "filters": {
+        "tittle": "Filters",
+        "complicatedFilterTittle": "Who are you interested in?",
+        "reset": "Reset",
+        "isOnline": "Online now",
+        "simpleFilter": "Simple filter",
+        "complicatedFilter": "Advanced filter",
+        "close": "Close",
+        "from": "From",
+        "to": "To",
+        "maritalStatusTitle": "Marital status of interest",
+        "educationTitle": "Education of interest",
+        "find": "Find"
+    },
+    "profileScreen": {
+        "title": "Profile",
+        "generalInformation": "Main Info",
+        "settings": {
+            "header": "Settings",
+            "subscription": {
+                "header": "Subscription",
+                "type": {
+                    "header": "Type: ",
+                    "no": "No",
+                    "unlimited": "Unlimited",
+                    "trial": "Trial",
+                    "1_month": "1 month",
+                    "3_months": "3 months",
+                    "6_months": "6 months"
+                },
+                "subscribe": "Subscribe",
+                "expires": "Expires: "
+            },
+            "language": {
+                "header": "Application Language",
+                "text": "Application in English"
+            },
+            "common": "General",
+            "privacy": "Privacy Policy",
+            "agreement": "User Agreement",
+            "useTerms": "Application Terms",
+            "paymentRules": "Payment Terms",
+            "refundRules": "Refund Rules",
+            "tariffs": "Tariffs",
+            "refund": "Refund Guaranties",
+            "help": "Help",
+            "error": {
+                "header": "Error",
+                "text": "Mail client not found. Our mail: nikahtime@bk.ru"
+            },
+            "mail": "Our mail: nikahtime@bk.ru\n",
+            "connectToDevs": "Message to developers",
+            "deleteAccount": "Delete account",
+            "deleteAccountAlert": {
+                "cancel": "Cancel",
+                "header": "Delete an account?",
+                "confirm": "Delete",
+                "msg": "All account data will be deleted."
+            },
+            "exit": "Exit",
+            "about": "About us",
+            "directors": "Director of the Center for Family Creation and Preservation NikahTime",
+            "associateDirectors": "Assistant Director of Public Relations",
+            "psychologists": "Psychologists",
+            "hazrats": "Hazrats",
+            "curators": "Curator of NikahTime",
+            "psychologist_single": "Psychologist",
+            "shariaJudge": "Sharia judge",
+            "link": "Open in VK",
+            "link_second": "Open in WhatsApp",
+            "price": "The cost of a consultation lasting up to 60 minutes",
+            "donate_msg": "Support us",
+            "donate_msg_text": "Assalamu'alaykum Warahmatullahi Wabarakatuh.\n\nGood day everybody!\nWe are glad to meet you in our site, NikahTime. Actually, this application we build from heart to helping everyone who wanna find the true love and make a halal family according from Islamic path.\n\nSo, we're happy to invite you for give donate or sadaqa to develop NikahTime site be better in the future. We want make all of member get comfortable and success for the goal, that find the true love and make a family, Insya Allah.\n\nIf you kindly to give our site be better and going to new version for IOS and GooglePlay, please sent to this number 2202 2032 5291 7218. Thank you",
+            "text_copied": "Card number was copied",
+            "phone_copied": "Phone number was copied"
+        }
+    },
+    "paymentScreen": {
+        "tittle": "Subscriptions",
+        "promo": "SPECIAL",
+        "paymentButton": "Subscribe",
+        "paymentDone": "Subscription is issued",
+        "daysCount": {
+            "zero": "{} days",
+            "one": "{} day",
+            "many": "{} days",
+            "other": "{} days"
+        },
+        "monthsCount": {
+            "zero": "{} mos",
+            "one": "{} mo",
+            "many": "{} mos",
+            "other": "{} mos"
+        },
+        "tariffDescription": "Extended app features for",
+        "feature1": "Unlimited number of user profiles available for viewing",
+        "feature2": "The ability to express sympathy to people you like",
+        "feature3": "The ability to communicate inside the app",
+        "feature4": "View mutual likes and visitors of your profile",
+        "continue": "Continue",
+        "paymentMethod": "Payment method",
+        "paymentMethodCard": "Card",
+        "emailForReceiptTitle": "Email for receipt",
+        "emailForReceiptError": {
+            "emailRequired": "You need to specify the email for the receipt",
+            "emailInvalid": "E-mail is not specified correctly"
+        },
+        "error": {
+            "title": "Error",
+            "closeButton": "Close",
+            "unknown": "Sorry, the purchase is unavailable for an unknown reason. Please try again later.",
+            "clientInvalid": "The purchase cannot be made, try changing your account or device.",
+            "paymentCancelled": "You canceled the purchase.",
+            "paymentInvalid": "The purchase was rejected. Please check the payment details and make sure that there are enough funds in the account.",
+            "paymentNotAllowed": "The purchase is not available for the selected payment method. Please make sure that your payment method allows you to pay for purchases online.",
+            "storeProductNotAvailable": "This product is not available in your region. Please change the store and try again.",
+            "cloudServicePermissionDenied": "The purchase was rejected.",
+            "cloudServiceNetworkConnectionFailed": "The purchase cannot be made because the device is offline. Please try again with a stable internet connection.",
+            "cloudServiceRevoked": "The purchase was rejected.",
+            "privacyAcknowledgementRequired": "The purchase cannot be made because you have not agreed to the AppStore terms of use. Please confirm your consent in the settings and return to the purchase.",
+            "unauthorizedRequestData": "An error has occurred. Please come back to purchase later.",
+            "invalidOfferIdentifier": "The promo offer is invalid.",
+            "invalidSignature": "Sorry, there was an error when using the promo code. Please try again later.",
+            "missingOfferParams": "Sorry, there was an error when using the promo offer. Please try again later.",
+            "invalidOfferPrice": "Sorry, the purchase is not possible. Try to repeat it later.",
+            "verifyError": "Sorry, there was a purchase error. The funds will be refunded after 3 days if the subscription is not activated.",
+            "verifyAppStoreError": "Sorry, there was a purchase error. The funds will be refunded after 3 days if the subscription is not activated.",
+            "duplicateProductObject": "Subscription activation is in processing. The funds will be refunded after 3 days if the subscription is not activated."
+        }
+    },
+    "common": {
+        "online": "Online",
+        "offline": "Offline",
+        "videoWaitBox": "Please wait, video are being loaded",
+        "apply": "Apply",
+        "takePhoto": "Take photo from Camera",
+        "getPhoto": "Take photo from Gallery",
+        "takeVide": "Take video from Camera",
+        "getVideo": "Take video from Gallery",
+        "delete": "Delete",
+        "errorHintText": "This field is required",
+        "phoneNumberHint": "Input country name or code",
+        "selectOptions": "Select options",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "change": "Change",
+        "notSet": "Not Set",
+        "setCountry": "Choose country",
+        "setMaritalStatus": "Choose marital status",
+        "setCountryAndCode": "Input country name or dial code",
+        "chooseOptions": "Choose options",
+        "vizited_q": "Who vizited me?",
+        "vizited": "Vizited me",
+        "usingPhoneNumberHint": "The phone number will be visible only to you",
+        "payment": {
+            "alert": {
+                "titleForView": "More features with a subscription",
+                "titleForAction": "More features with a subscription",
+                "detail": "Only now subscription for the price of a cup of coffee ☕️\nDon't miss the opportunity to find your soulmate!",
+                "moreButton": "More",
+                "notNowButton": "Not now"
+            }
+        },
+        "fieldNotRequired": "(not required)"
+    },
+    "educationList": {
+        "basicGeneral": "Basic General",
+        "secondaryGeneral": "Secondary General",
+        "secondaryVocational": "Vocational education",
+        "higherBachelorOrSpecialist": "Higher (bachelor or specialist)",
+        "higherMaster": "Higher (magistr)",
+        "academicDegree": "Doctor"
+    },
+    "nationalityState": {
+        "notSelected": "Not selected"
+    },
+    "familyState": {
+        "notMarried": "Single",
+        "married": "Married",
+        "divorced": "Divorced"
+    },
+    "observantOfTheCanonsFemaleState": {
+        "observingIslamCanons": "Islamic Muslim woman",
+        "nonObservingIslamCanons": "I observe religious rites \non holidays"
+    },
+    "observantOfTheCanonsMaleState": {
+        "observingIslamCanons": "Islamic Muslim man",
+        "nonObservingIslamCanons": "I observe religious rites \non holidays"
+    },
+    "Islam": "Islam",
+    "Christianity": "Christianity",
+    "Judaism": "Judaism",
+    "religionSubtitle": "Religious  affiliation",
+    "contacts": "Contacts",
+    "faithState": {
+        "observantMuslim": "Ready to move",
+        "nonObservantMuslim": "Not ready to move",
+        "notSelected": "Not selected"
+    },
+    "childrenState": {
+        "yes": "Have children",
+        "no": "No children"
+    },
+    "badHabbits": {
+        "smoking": "Smoking",
+        "alcohol": "Alcohol",
+        "gambling": "Gambling addiction",
+        "other_h": "Other",
+        "missing": "Missing"
+    },
+    "interestTag": {
+        "walks": "Walks",
+        "sport": "Sport",
+        "cinema": "Cinema",
+        "yoga": "Yoga",
+        "food": "Food",
+        "tourism": "Tourism",
+        "leisure": "Leisure",
+        "swimming": "Swimming",
+        "crossFit": "CrossFit",
+        "bicycle": "Bicycle",
+        "animals": "Animals",
+        "comedy": "Comedy",
+        "love": "Love"
+    },
+    "claim": {
+        "toReport": "Report",
+        "claimReason": {
+            "propaganda": "Hate propaganda and inciting hatred",
+            "misleading": "Misleading",
+            "promo": "Promotional materials",
+            "bulling": "Offensive language",
+            "adults": "Adult content",
+            "spam": "Spam",
+            "finance": "Financial services"
+        },
+        "description": "We will review this report within 24 hours and, if a violation is detected, we will take the necessary measures to stop it.",
+        "send": "Send",
+        "reason": "Select a reason for the complaint",
+        "comment": "Comment"
+    },
+    "chat": {
+        "cancelButtonText": "OK",
+        "attentionHeader": "Attention",
+        "attentionText": "Your profile is blocked.",
+        "waitbox": "Please wait, your chats are loading",
+        "main": {
+            "header": "Chats",
+            "find": "Chat search",
+            "you": "you: ",
+            "min": "min.",
+            "hour": "h.",
+            "day": "d.",
+            "now": "now",
+            "lastTimeOnline": {
+                "prefix": "Was online ",
+                "postfix": " ago"
+            }
+        },
+        "del": {
+            "cancel": "Cancel",
+            "header": "Attention",
+            "confirm": "Confirm",
+            "alert": "Attention",
+            "msg": "Are you sure you want to delete the selected chat"
+        },
+        "file": "File",
+        "img": "Image",
+        "video": "Video",
+        "bottom": {
+            "img": {
+                "take": "Take a photo with the camera",
+                "get": "Select photo from gallery"
+            },
+            "video": {
+                "take": "Record video on camera",
+                "get": "Select video from gallery"
+            },
+            "file": "Select file from storage"
+        },
+        "blocked": "Sending messages is limited",
+        "waitbox": "Wait, chat is loading",
+        "fileWaitBox": "Attachment is loading",
+        "block": "Block",
+        "unblock": "Unblock",
+        "delete": "Delete dialog",
+        "report": "Report"
+    },
+    "welcome_screen": {
+        "createAcc": "Create account",
+        "ageConfirmed": {
+            "question": "Are you 18?",
+            "bad": "I'm not 18 yet",
+            "good": "I'm 18",
+            "action": "Verify Your age to continue"
+        },
+        "alreadyLogged": "Already logged in? ",
+        "authorize": "Sign In",
+        "carousel": {
+            "item1": {
+                "header": "Handy filters",
+                "text": "Customize your filters and\nfind only those you like"
+            },
+            "item2": {
+                "header": "People only",
+                "text": "Our app does a thorough\ncheck without missing any bots"
+            },
+            "item3": {
+                "header": "Chat",
+                "text": "Communicate in a convenient and simple chat\nwith the people you like"
+            }
+        }
+    },
+    "registration": {
+        "header": "Registration",
+        "appendix": {
+            "text": "By registering You agree with\n",
+            "item1": "Privacy Policy",
+            "and": " and ",
+            "item2": "Terms of Use"
+        },
+        "sendCode": "Send Code",
+        "type": {
+            "message": "or register by",
+            "phone": {
+                "by": "Phone number",
+                "header": "My number",
+                "text": "Please enter your current phone number. We will send you a 6-digit code to verify your account. ",
+                "hintPass": "Create password",
+                "hintSecPass": "Repeat password",
+                "error": "A user with this phone number already exists. If it's you, go through the password recovery procedure",
+                "nextScreenMessage": "specified number"
+            },
+            "email": {
+                "by": "E-mail address",
+                "header": "My E-mail",
+                "text": "Please enter your current E-mail address. We will send you a 6-digit code to verify your account. ",
+                "hintMail": "Enter E-mail",
+                "hintPass": "Create password",
+                "hintSecPass": "Repeat password",
+                "error": "A user with this E-mail address already exists. If it's you, go through the password recovery procedure",
+                "nextScreenMessage": "specified E-mail address"
+            }
+        },
+        "PIN": {
+            "header": "PIN",
+            "action": "Continue",
+            "message": "PIN-code was send to {}:\n {}",
+            "sendAgain": "Send PIN-code again"
+        },
+        "error": {
+            "msg": "Check your input and try again",
+            "diffPass": "The entered passwords do not match.",
+            "badPass": "Password must be at least 8 characters long",
+            "badPIN": "Incorrect code entered",
+            "maxLength": "Reached max length (less 25 symbols)"
+        },
+        "profile": {
+            "header": "Profile Creation",
+            "educationHint": "Select your education"
+        },
+        "interest": {
+            "header": "Your interests",
+            "subheader": "Please add at least 5 interests so we can find more suitable people",
+            "addNew": "Add your own"
+        },
+        "about": {
+            "header": "About me",
+            "subheader": "Write some information about yourself. This way more people will write to you.",
+            "example": "For example: I have a university degree, I walk my dog in the morning, I go to the movies in my spare time."
+        }
+    },
+    "entering": {
+        "error": {
+            "dataType": "Check that the entered data is correct and try again\nNumber example: +79998887766 or 79998887766\nEmail address example: address@mailbox.domain",
+            "nouser": "The requested user does not exist or the password is incorrect. Please check that the entered data is correct and try again.",
+            "badEmail": "Incorrect email address entered. Check your input and try again.\nExample of a valid email address: xxx@xxx.xx",
+            "badNumber": "Invalid phone number entered. Please check your input and try again.\nExample of a valid phone number: +79998887766 or 79998887766"
+        },
+        "main": {
+            "header": "Entering",
+            "divider": "or sign in with",
+            "hintData": "Enter Email or phone number",
+            "hintPass": "Enter password",
+            "hintRecPass": "Forgot your password?",
+            "enter": "Enter"
+        },
+        "recoveryBy": {
+            "email": {
+                "hint": "Enter Email",
+                "get": "Get code",
+                "header": "Password recovery",
+                "msg": "Enter your Email and you will receive an email with a code to reset your password"
+            },
+            "number": {
+                "hint": "Enter phone number",
+                "get": "Get code",
+                "header": "Password recovery",
+                "msg": "Enter your phone number and you will receive an SMS with a code to reset your password"
+            },
+            "error": "Something went wrong, please try again later"
+        },
+        "conclusion": {
+            "header": "Password recovered successfully",
+            "msg": "You can now use your new password to protect your data",
+            "ok": "Got it"
+        },
+        "create": {
+            "header": "Password recovery",
+            "msg": "Create a new strong password",
+            "hint": "Enter password",
+            "continue": "Continue",
+            "error": {
+                "diff": "The entered passwords do not match",
+                "length": "Password must be at least 8 characters",
+                "bad": "Unable to set new password"
+            }
+        },
+        "code": {
+            "number": "phone number",
+            "email": "email",
+            "hint": "Enter received code",
+            "again": "Resend code",
+            "error": "Failed to send the verification code. Please check the correctness of the entered data and try again",
+            "error_uncorrect": "Incorrect code entered. Please check the correctness of the entered data and try again",
+            "action": "Restore",
+            "header": "Password recovery",
+            "message": "Code sent to {}:\n {}"
+        },
+        "checkType": {
+            "number": "By phone number",
+            "email": "By E-mail address",
+            "header": "Password recovery"
+        }
+    },
+    "appUpdater": {
+        "title": "Update NikahTime?",
+        "description": "A new version of NikahTime is available!",
+        "remindAction": "Remind me later",
+        "cancelAction": "Not update",
+        "updateAction": "Update"
+    },
+    "smoking": "Smoking",
+    "alcohol": "Alcohol",
+    "gambling": "Gambling addiction",
+    "other": "other",
+    "other_h": "Other",
+    "missing": "Missing",
+    "needPhotoError": "You must add at least 1 photo",
+    "news": {
+        "header": "News",
+        "read": "Continue reading",
+        "searchHint": "Enter a search string",
+        "loading": {
+            "feed": "Please wait, loading news",
+            "news": "Please wait, news is loading",
+            "commentaries": "Please wait, comments are loading"
+        },
+        "addComment": "Add comment",
+        "reply": "Reply",
+        "commentReply": "Comment replies",
+        "commentEmpty": "No comments yet",
+        "commentaries": "Commentaries",
+        "showAllCommenaries": "Show all replies",
+        "timeAgo": {
+            "now": "Just yet",
+            "min": "m. back",
+            "hour": "h. ago",
+            "day": "d. ago"
+        },
+        "views": {
+            "thousand": "K",
+            "million": "M",
+            "billion": "B"
+        }
+    }
+}

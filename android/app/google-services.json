@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1023685173404",
+    "project_id": "nikah-time-332406",
+    "storage_bucket": "nikah-time-332406.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023685173404:android:cc7262ccf1b3aa54888d59",
+        "android_client_info": {
+          "package_name": "ru.nikahtime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1023685173404-pvv16g70v1g2raajt52a02m5h9plgqtq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.nikahtime",
+            "certificate_hash": "7c03cb28edc9354eb284f6a5ad0a83f5f8f7bda3"
+          }
+        },
+        {
+          "client_id": "1023685173404-02qq7rgip0m6h793j7obt2vh4f3rt5io.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUIdG8QnVhcazvblfOyfWuuY_JwgJXVsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1023685173404-02qq7rgip0m6h793j7obt2vh4f3rt5io.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1023685173404-m22mjqv6tavb3vhhg29apgkq89k9fag7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ru.nikahtime"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
