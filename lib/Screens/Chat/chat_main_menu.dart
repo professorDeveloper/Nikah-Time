@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_story/flutter_story.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:laravel_echo2/laravel_echo2.dart';
@@ -13,8 +14,8 @@ import 'package:untitled/Screens/Chat/bloc/chat_list_bloc/chat_bloc.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/Screens/Chat/chat_settings.dart';
 import 'package:untitled/Screens/Chat/chat_with_user.dart';
-import 'package:untitled/Screens/Chat/widgets/add_story_button.dart';
-import 'package:untitled/Screens/Chat/widgets/story_item.dart';
+import 'package:untitled/Screens/Chat/widgets/story_card.dart';
+import 'package:untitled/Screens/Chat/widgets/story_view.dart';
 import 'package:untitled/Screens/Payment/payment.dart' as payment;
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart' as PB;
 import 'package:untitled/components/models/user_profile_data.dart';
@@ -86,6 +87,7 @@ class ChatMainPageState extends State<ChatMainPage>
     //echo.disconnect();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+    storyController.dispose();
   }
 
   @override
@@ -106,6 +108,7 @@ class ChatMainPageState extends State<ChatMainPage>
     'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/640px-Sundar_Pichai_-_2023_%28cropped%29.jpg',
     'https://media.altchar.com/prod/images/940_530/gm-e10d2519-5a78-4da6-b28e-a423036c8328-pu.jpeg',
   ];
+  StoryController storyController = StoryController();
 
   @override
   Widget build(BuildContext context) {
@@ -227,21 +230,141 @@ class ChatMainPageState extends State<ChatMainPage>
           const SizedBox(
             height: 16,
           ),
-          Container(
-            height: 124,
-            margin: const EdgeInsets.symmetric(horizontal: 1.0), // Adjust margin here
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: storyImages.length + 1,
+          Story.builder(
+              controller: storyController,
+              itemCount: 2,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return AddStoryButton();
-                } else {
-                  return StoryItem(imageUrl: storyImages[index - 1]);
-                }
-              },
-            ),  ),
+                StoryModel s = getStories()[index];
+                return StoryUser(
+                  width: 70,
+                  margin: EdgeInsets.all(2),
+                  height: 70,
+
+                  avatar: s.avatar,
+                  label: s.label,
+                  children: s.cards == null
+                      ? []
+                      : s.cards!
+                          .map((card) => StoryCard(
+                                onVisited: (cardIndex) {
+                                  setState(() {
+                                    card.visited = true;
+                                  });
+                                },
+                                footer: StoryCardFooter(
+                                  messageBox: StoryCardMessageBox(
+                                    child: Center(
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                MaterialButton(
+                                                  minWidth: 0,
+                                                  padding: EdgeInsets.zero,
+                                                  shape: const CircleBorder(),
+                                                  child: const Text(
+                                                    "😂",
+                                                    style:
+                                                        TextStyle(fontSize: 32),
+                                                  ),
+                                                  onPressed: () {},
+                                                ),
+                                                MaterialButton(
+                                                  minWidth: 0,
+                                                  padding: EdgeInsets.zero,
+                                                  shape: const CircleBorder(),
+                                                  child: const Text(
+                                                    "😮",
+                                                    style:
+                                                        TextStyle(fontSize: 32),
+                                                  ),
+                                                  onPressed: () {},
+                                                ),
+                                                MaterialButton(
+                                                  minWidth: 0,
+                                                  padding: EdgeInsets.zero,
+                                                  shape: const CircleBorder(),
+                                                  child: const Text(
+                                                    "😍",
+                                                    style:
+                                                        TextStyle(fontSize: 32),
+                                                  ),
+                                                  onPressed: () {},
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 30),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                MaterialButton(
+                                                  minWidth: 0,
+                                                  padding: EdgeInsets.zero,
+                                                  shape: const CircleBorder(),
+                                                  child: const Text(
+                                                    "😢",
+                                                    style:
+                                                        TextStyle(fontSize: 32),
+                                                  ),
+                                                  onPressed: () {},
+                                                ),
+                                                MaterialButton(
+                                                  minWidth: 0,
+                                                  padding: EdgeInsets.zero,
+                                                  shape: const CircleBorder(),
+                                                  child: const Text(
+                                                    "👏",
+                                                    style:
+                                                        TextStyle(fontSize: 32),
+                                                  ),
+                                                  onPressed: () {},
+                                                ),
+                                                MaterialButton(
+                                                  minWidth: 0,
+                                                  padding: EdgeInsets.zero,
+                                                  shape: const CircleBorder(),
+                                                  child: const Text(
+                                                    "🔥",
+                                                    style:
+                                                        TextStyle(fontSize: 32),
+                                                  ),
+                                                  onPressed: () {},
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  likeButton: StoryCardLikeButton(
+                                    onLike: (cardLike) {},
+                                  ),
+                                  forwardButton: StoryCardForwardButton(
+                                    onForward: (cardIndex) {},
+                                  ),
+                                ),
+                                color: card.color,
+                                visited: card.visited,
+                                cardDuration: card.duration,
+                                childOverlay: card.childOverlay,
+                                child: card.child,
+                              ))
+                          .toList(),
+                );
+              }),
           const SizedBox(
             height: 4,
           ),
@@ -569,4 +692,36 @@ class ChatMainPageState extends State<ChatMainPage>
       },
     );
   }
+
+  List<StoryModel> getStories() {
+    List<StoryModel> storyList = [];
+    storyList.add(StoryModel(
+        id: 1,
+        avatar: Image.network(storyImages[1],      fit: BoxFit.cover, // centerCrop ga o'xshash
+        ),
+        label: Text(
+          "Kriwna",
+          style: const TextStyle(color: Colors.black),
+        ),
+        cards: [
+          storyCard1(1),
+          storyCard2("https://i.pinimg.com/originals/9c/0c/1f/9c0c1f0855a9551d345291400d066ebb.jpg"),
+          storyCard2("https://i.pinimg.com/originals/6f/36/c8/6f36c8cf4d7767302f7c2d54663735b9.jpg")
+        ]));
+    storyList.add(StoryModel(
+        id: 2,
+        avatar: Image.network(storyImages[2],fit: BoxFit.cover,),
+        label: Text(
+          "Saikou",
+          style: const TextStyle(color: Colors.black),
+        ),
+        cards: [
+          storyCard2("https://i.pinimg.com/originals/11/dd/b9/11ddb951f26e29588dfc837e488a3a37.jpg"),
+          storyCard2("https://i.pinimg.com/originals/2b/21/e9/2b21e9484e4ab92a70af2e960f9998a4.jpg"),
+          storyCard1(2),
+        ]));
+    return storyList;
+  }
+
+
 }
