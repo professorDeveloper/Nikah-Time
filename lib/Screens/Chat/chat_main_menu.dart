@@ -1,25 +1,27 @@
-import 'package:easy_localization/easy_localization.dart' as localized;
-import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:laravel_echo2/laravel_echo2.dart';
 import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:untitled/Providers/NotSeenMessagesProvider.dart';
 import 'package:untitled/Screens/Chat/bloc/chat_list_bloc/chat_bloc.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/Screens/Chat/chat_settings.dart';
 import 'package:untitled/Screens/Chat/chat_with_user.dart';
-import 'package:untitled/Screens/Chat/widgets/add_story_button.dart';
-import 'package:untitled/Screens/Chat/widgets/story_item.dart';
 import 'package:untitled/Screens/Payment/payment.dart' as payment;
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart' as PB;
-import 'package:untitled/components/models/user_profile_data.dart';
+import 'package:untitled/Screens/main_page.dart';
 import 'package:untitled/components/widgets/image_viewer.dart';
 import 'package:untitled/components/widgets/likeAnimation.dart';
+
+
+import 'package:easy_localization/easy_localization.dart' as localized;
+import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
 
 class ChatMainPage extends StatefulWidget {
@@ -33,14 +35,14 @@ class ChatMainPage extends StatefulWidget {
   }
 }
 
-class ChatMainPageState extends State<ChatMainPage>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+class ChatMainPageState extends State<ChatMainPage> with TickerProviderStateMixin, WidgetsBindingObserver
+{
   TextEditingController searchFieldTextController = TextEditingController();
   late ChatBloc _chatBloc;
 
+
   bool show = false;
   late Echo echo;
-
   connectToSocket() async {
     debugPrint("Try to server connect");
     try {
@@ -50,7 +52,8 @@ class ChatMainPageState extends State<ChatMainPage>
         'host': 'https://www.nikahtime.ru:6002',
         'auth': {
           'headers': {
-            'Authorization': 'Bearer ${prefs.getString("token") ?? ""}'
+            'Authorization':
+                'Bearer ${prefs.getString("token") ?? ""}'
           }
         }
       });
@@ -64,11 +67,14 @@ class ChatMainPageState extends State<ChatMainPage>
     }
   }
 
+
   void newChatMessageEvent(dynamic e) {
     debugPrint("SocketEvent ChatMainMenu" + e.toString());
     if (!mounted) return;
     if (e["type"] == "Новое сообщение") {
-      _chatBloc.add(const LoadChatList());
+      _chatBloc.add(
+          const LoadChatList()
+      );
     }
   }
 
@@ -76,8 +82,8 @@ class ChatMainPageState extends State<ChatMainPage>
   void initState() {
     super.initState();
     debugPrint("init chat_main_menu");
-    WidgetsBinding.instance.addObserver(this);
-    connectToSocket();
+     WidgetsBinding.instance.addObserver(this);
+    connectToSocket();  
     FlutterAppBadger.removeBadge();
   }
 
@@ -99,44 +105,41 @@ class ChatMainPageState extends State<ChatMainPage>
     FlutterAppBadger.removeBadge();
   }
 
-  final List<String> storyImages = [
-    'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR6EYleKF1cKmcWFPEPVOH9themmyj-LznF8AzLPDNQ4WDAestF',
-    'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTmJpg91cAhagORNOn8MS3yU-wAejGC3-HWV46KQ942X6PI05uV',
-    'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR6EYleKF1cKmcWFPEPVOH9themmyj-LznF8AzLPDNQ4WDAestF',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/640px-Sundar_Pichai_-_2023_%28cropped%29.jpg',
-    'https://media.altchar.com/prod/images/940_530/gm-e10d2519-5a78-4da6-b28e-a423036c8328-pu.jpeg',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    PB.ProfileInitial state =
-        context.read<PB.ProfileBloc>().state as PB.ProfileInitial;
+
+    PB.ProfileInitial state = context.read<PB.ProfileBloc>().state as PB.ProfileInitial;
     bool needPay = state.userProfileData?.userTariff == null;
 
-    if (needPay) {
+    if(needPay)
+    {
       return Center(child: payment.paymentStub(context));
     }
 
     return BlocProvider<ChatBloc>(
-        create: (context) => ChatBloc(),
-        child: BlocBuilder<ChatBloc, ChatState>(
-          builder: (context, state) {
-            state as ChatInitial;
-            switch (state.pageState) {
-              case PageState.preload:
-                context.read<ChatBloc>().add(const LoadChatList());
-                return waitBox();
-              case PageState.ready:
-                _chatBloc = context.read<ChatBloc>();
-                return mainPage(context, state);
-              case PageState.error:
-              case PageState.hold:
-              case PageState.noMoreItem:
-              case PageState.loading:
-                return Container();
-            }
-          },
-        ));
+      create: (context) => ChatBloc(),
+      child: BlocBuilder<ChatBloc, ChatState>(
+        builder: (context, state) {
+          state as ChatInitial;
+          switch(state.pageState)
+          {
+            case PageState.preload:
+              context.read<ChatBloc>().add(
+                const LoadChatList()
+              );
+              return waitBox();
+            case PageState.ready:
+              _chatBloc = context.read<ChatBloc>();
+              return mainPage(context, state);
+            case PageState.error:
+            case PageState.hold:
+            case PageState.noMoreItem:
+            case PageState.loading:
+              return Container();
+          }
+        },
+      )
+    );
   }
 
   Widget waitBox() {
@@ -173,16 +176,18 @@ class ChatMainPageState extends State<ChatMainPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
-            height: 60,
+            height: 70,
           ),
-          Builder(builder: (context) {
-            if (show) {
-              show = false;
-              return LikeAnimationWidget(true);
-            } else {
-              return const SizedBox.shrink();
+          Builder(
+            builder: (context) {
+              if (show) {
+                show = false;
+                return LikeAnimationWidget(true);
+              } else{
+                return const SizedBox.shrink();
+              }
             }
-          }),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -207,80 +212,66 @@ class ChatMainPageState extends State<ChatMainPage>
                   borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                 ),
                 child: IconButton(
-                    splashRadius: 4.0,
-                    iconSize: 18.0,
-                    padding: const EdgeInsets.all(0),
-                    icon: const Icon(
-                      Icons.settings,
-                      color: Color.fromARGB(255, 117, 116, 115),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ChatSettings(),
-                          ));
-                    }),
+                  splashRadius: 4.0,
+                  iconSize: 18.0,
+                  padding: const EdgeInsets.all(0),
+                  icon: const Icon(
+                    Icons.settings,
+                    color: Color.fromARGB(255, 117, 116, 115),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChatSettings(),
+                      ));
+                  }),
               )
             ],
           ),
           const SizedBox(
             height: 16,
           ),
-          Container(
-            height: 124,
-            margin: const EdgeInsets.symmetric(horizontal: 1.0), // Adjust margin here
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: storyImages.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return AddStoryButton();
-                } else {
-                  return StoryItem(imageUrl: storyImages[index - 1]);
-                }
-              },
-            ),  ),
-          const SizedBox(
-            height: 4,
-          ),
+
           SizedBox(
-              height: 40,
-              child: TextField(
-                controller: searchFieldTextController,
-                textAlignVertical: TextAlignVertical.bottom,
-                decoration: InputDecoration(
-                  suffixIcon: (searchFieldTextController.text.isEmpty)
-                      ? const Icon(Icons.search_sharp)
-                      : IconButton(
-                          onPressed: () async {
-                            searchFieldTextController.text = "";
-                            context
-                                .read<ChatBloc>()
-                                .add(const SearchChat(searchString: ""));
-                          },
-                          icon: const Icon(Icons.close)),
-                  hintText: LocaleKeys.chat_main_find.tr(),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color.fromARGB(255, 218, 216, 215),
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color.fromARGB(255, 0, 207, 145),
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
+            height: 40,
+            child: TextField(
+              controller: searchFieldTextController,
+              textAlignVertical: TextAlignVertical.bottom,
+              decoration: InputDecoration(
+                suffixIcon: (searchFieldTextController.text.isEmpty) ? const Icon(Icons.search_sharp)
+                : IconButton(
+                  onPressed: () async {
+                    searchFieldTextController.text = "";
+                    context.read<ChatBloc>().add(
+                      const SearchChat(searchString: "")
+                    );
+                  },
+                  icon: const Icon(Icons.close)
                 ),
-                onChanged: (value) {
-                  context.read<ChatBloc>().add(SearchChat(searchString: value));
-                },
-              )),
+                hintText: LocaleKeys.chat_main_find.tr(),
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromARGB(255, 218, 216, 215),
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromARGB(255, 0, 207, 145),
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              onChanged: (value) {
+                context.read<ChatBloc>().add(
+                  SearchChat(searchString: value)
+                );
+              },
+            )
+          ),
           const SizedBox(
             height: 16,
           ),
@@ -315,174 +306,170 @@ class ChatMainPageState extends State<ChatMainPage>
   Widget chatListItem(BuildContext context, ChatWithLastMessage chatInfo) {
     getTimeValue(chatInfo.lastMessageTime.toString());
     return GestureDetector(
-      onLongPress: () {
-        _showAlertDialog(context, chatInfo.chatId!);
-      },
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ChatWithUserScreen(
-                  chatInfo,
-                  widget.userProfileData.gender ?? "",
-                  widget.userProfileData.id ?? 0)),
-        ).then((_) {
-          context.read<ChatBloc>().add(const LoadChatList());
-          final provider =
-              Provider.of<NotSeenMessagesProvider>(context, listen: false);
-          provider.GetNumberNotSeenMessagesFromServer(
-              widget.userProfileData.accessToken.toString());
-        });
-      },
-      child: Row(
-        //mainAxisAlignment: MainAxisAlignment.start,
-        //crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(90.0),
-                child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: displayImageMiniature(chatInfo.avatar?.preview ?? ""
+        onLongPress: () {
+          _showAlertDialog(context, chatInfo.chatId!);
+        },
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ChatWithUserScreen(chatInfo, widget.userProfileData.gender ?? "", widget.userProfileData.id ?? 0)),
+          ).then((_){
+            context.read<ChatBloc>().add(
+              const LoadChatList()
+            );
+            final provider = Provider.of<NotSeenMessagesProvider>(context, listen: false);
+            provider.GetNumberNotSeenMessagesFromServer(widget.userProfileData.accessToken.toString());
+          });
+        },
+        child: Row(
+          //mainAxisAlignment: MainAxisAlignment.start,
+          //crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(90.0),
+                  child: SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: displayImageMiniature(
+                        chatInfo.avatar?.preview ?? ""
                         //chatInfo.userAvatar.toString()
-                        )),
-              ),
-              Visibility(
-                visible: chatInfo.isOnline == true,
-                child: Positioned(
-                  bottom: -3,
-                  right: -3,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(90.0),
-                    child: Container(
-                      width: 18,
-                      height: 18,
-                      color: Colors.white,
-                      child: Center(
-                        child: SizedBox(
-                          width: 10,
-                          height: 10,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(90.0),
-                            child: Container(
-                              color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+                      )
+                  ),
+                ),
+                Visibility(
+                  visible: chatInfo.isOnline == true,
+                  child: Positioned(
+                    bottom: -3,
+                    right: -3,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(90.0),
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        color: Colors.white,
+                        child: Center(
+                          child: SizedBox(
+                            width: 10,
+                            height: 10,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(90.0),
+                              child: Container(
+                                color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+                              ),
                             ),
                           ),
+
                         ),
                       ),
                     ),
                   ),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Flexible(
-            flex: 1,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        chatInfo.userName.toString(),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: GoogleFonts.rubik(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: const Color.fromARGB(255, 33, 33, 33),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      (chatInfo.isAuthUserMessage)
-                          ? LocaleKeys.chat_main_you.tr()
-                          : "",
-                      style: GoogleFonts.rubik(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: (chatInfo.lastMessageType != "text")
-                            ? const Color.fromARGB(180, 0, 0, 255)
-                            : const Color.fromARGB(180, 33, 33, 33),
-                      ),
-                    ),
-                    Expanded(
-                        child: Text(
-                      lastMessageField(chatInfo),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: GoogleFonts.rubik(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: (chatInfo.lastMessageType != "text")
-                            ? const Color.fromARGB(180, 0, 0, 255)
-                            : const Color.fromARGB(180, 33, 33, 33),
-                      ),
-                    ))
-                  ],
                 )
               ],
             ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(right: 16),
-                child: Text(
-                  getTimeValue(chatInfo.lastMessageTime.toString()),
-                  style: GoogleFonts.rubik(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    color: const Color.fromARGB(255, 157, 157, 157),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Container(
-                padding: const EdgeInsets.only(right: 16),
-                child: (chatInfo.numberNotSeenMessages! > 0)
-                    ? Container(
-                        //padding: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        width: 12,
-                        height: 12,
-                        child: Center(
-                          child: Text(
-                            '${chatInfo.numberNotSeenMessages!}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                            ),
-                            textAlign: TextAlign.center,
+            const SizedBox(width: 8,),
+            Flexible(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          chatInfo.userName.toString(),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: GoogleFonts.rubik(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: const Color.fromARGB(255, 33, 33, 33),
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        (chatInfo.isAuthUserMessage)
+                            ? LocaleKeys.chat_main_you.tr()
+                            : "",
+                        style: GoogleFonts.rubik(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: (chatInfo.lastMessageType != "text")
+                              ? const Color.fromARGB(180, 0, 0, 255)
+                              : const Color.fromARGB(180, 33, 33, 33),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          lastMessageField(chatInfo),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: GoogleFonts.rubik(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: (chatInfo.lastMessageType != "text")
+                                ? const Color.fromARGB(180, 0, 0, 255)
+                                : const Color.fromARGB(180, 33, 33, 33),
+                          ),
+                        )
                       )
-                    : null,
-              )
-            ],
-          )
-        ],
-      ),
+                    ],
+                  )
+
+                ],
+              ),
+            ),
+            const SizedBox(width: 8,),
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Text(
+                    getTimeValue(chatInfo.lastMessageTime.toString()),
+                    style: GoogleFonts.rubik(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      color: const Color.fromARGB(255, 157, 157, 157),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4,),
+                Container(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: (chatInfo.numberNotSeenMessages! > 0)
+                      ? Container(
+                    //padding: const EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    width: 12,
+                    height: 12,
+                    child: Center(
+                      child: Text(
+                        '${chatInfo.numberNotSeenMessages!}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ) : null,
+                )
+              ],
+            )
+          ],
+        ),
     );
   }
 
@@ -548,7 +535,9 @@ class ChatMainPageState extends State<ChatMainPage>
     Widget confirmButton = TextButton(
       child: Text(LocaleKeys.chat_del_confirm.tr()),
       onPressed: () async {
-        context.read<ChatBloc>().add(DeleteChat(chatId: chatID));
+        context.read<ChatBloc>().add(
+          DeleteChat(chatId: chatID)
+        );
         MyTracker.trackEvent("Delete chat from main chat page", {});
         Navigator.of(context).pop();
       },
