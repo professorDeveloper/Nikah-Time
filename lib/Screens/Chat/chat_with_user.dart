@@ -315,8 +315,36 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
   Widget inputBox() {
     return Row(
       children: [
+
         Expanded(
-            flex: 9,
+          flex: 1,
+          child: Container(
+              height: 54,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1.0,
+                  color: const Color.fromARGB(255, 218, 216, 215),
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              ),
+              child: IconButton(
+                splashRadius: 1,
+                padding: const EdgeInsets.all(0),
+                icon: const Icon(
+                  Icons.attach_file_outlined,
+                  color: Color.fromARGB(255, 150, 150, 150),
+                ),
+                onPressed: () {
+                  filePicker();
+                },
+              )),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+
+        Expanded(
+            flex: 7,
             child: TextField(
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
@@ -337,14 +365,14 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                     color: Color.fromARGB(255, 218, 216, 215),
                     width: 1,
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
                     color: Color.fromARGB(255, 0, 207, 145),
                     width: 1,
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
               ),
               keyboardType: TextInputType.multiline,
@@ -355,29 +383,30 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         const SizedBox(
           width: 5,
         ),
+
         Expanded(
           flex: 1,
           child: Container(
-              height: 60,
+              height: 54,
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 1.0,
                   color: const Color.fromARGB(255, 218, 216, 215),
                 ),
-                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
               ),
               child: IconButton(
                 splashRadius: 1,
                 padding: const EdgeInsets.all(0),
                 icon: const Icon(
-                  Icons.attach_file_outlined,
+                  Icons.mic,
                   color: Color.fromARGB(255, 150, 150, 150),
                 ),
                 onPressed: () {
-                  filePicker();
                 },
               )),
-        )
+        ),
+
       ],
     );
   }
