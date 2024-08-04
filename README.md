@@ -1,6 +1,5 @@
 
 # Nikah Time 
-
 ![splash_static_item_en](https://github.com/user-attachments/assets/3faf4dd2-e1ce-41b3-afee-b07972ee2b04)
 <p align="center">
    <a href="https://apps.apple.com/ru/app/nikah-time/id1593398215"><img src="https://img.shields.io/badge/Appstore-7289DA?style=for-the-badge&logo=appstore&logoColor=white"></a>
