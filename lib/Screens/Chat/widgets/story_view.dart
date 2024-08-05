@@ -1,325 +1,178 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_story/flutter_story.dart';
+import 'package:like_button/like_button.dart';
+import 'package:story_view/controller/story_controller.dart';
+import 'package:story_view/utils.dart';
+import 'package:story_view/widgets/story_view.dart';
 
-class StoryViewPage extends StatefulWidget {
-  final int index;
+import '../../../components/models/story_model.dart';
 
-  StoryViewPage({required this.index});
+class StoryViewPage extends StatelessWidget {
+  final List<Story> stories;
+  final int initialIndex;
+  final Function(int index) onStoryViewed; // Callback to notify story viewed
+  final User user; // User model containing user details
 
-  @override
-  State<StoryViewPage> createState() => _StoryViewPageState();
-}
 
-class _StoryViewPageState extends State<StoryViewPage> {
-  StoryController storyController = StoryController();
-  late List<StoryModel> stories;
-
-  @override
-  void initState() {
-    super.initState();
-    stories = getStories();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    storyController.dispose();
-  }
+  StoryViewPage({
+    required this.stories,
+    required this.initialIndex,
+    required this.onStoryViewed,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final controller = StoryController();
+
+    List<StoryItem> storyItems = stories.map((story) {
+      if (story.type == StoryType.image) {
+        return StoryItem.pageImage(
+          url: story.url,
+          shown: true,
+          imageFit: BoxFit.fill,
+          duration: const Duration(seconds: 5), controller: controller, // Duration for images
+        );
+      } else if (story.type == StoryType.video) {
+        return StoryItem.pageVideo(
+          story.url,
+          imageFit: BoxFit.fitHeight,
+
+          controller: controller,
+          duration: const Duration(seconds: 35), // Duration for videos
+        );
+      } else  {
+        return StoryItem.text(title: "Unsupported story type",backgroundColor: Colors.black38);
+      }
+    }).toList();
+
     return Scaffold(
-      body:           Story.builder(
-          controller: storyController,
-          itemCount: stories.length,
-          itemBuilder: (context, index) {
-            StoryModel s = stories[index];
-            return StoryUser(
-              avatar: s.avatar,
-              label: s.label,
-              children: s.cards == null
-                  ? []
-                  : s.cards!
-                  .map((card) => StoryCard(
-                onVisited: (cardIndex) {
-                  setState(() {
-                    card.visited = true;
-                  });
-                },
-                footer: StoryCardFooter(
-                  messageBox: StoryCardMessageBox(
-                    child: Center(
-                      child: SizedBox(
-                        width:
-                        MediaQuery.of(context).size.width /
-                            1.5,
-                        height:
-                        MediaQuery.of(context).size.width /
-                            1.5,
-                        child: Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceAround,
-                              children: [
-                                MaterialButton(
-                                  minWidth: 0,
-                                  padding: EdgeInsets.zero,
-                                  shape: const CircleBorder(),
-                                  child: const Text(
-                                    "😂",
-                                    style:
-                                    TextStyle(fontSize: 32),
-                                  ),
-                                  onPressed: () {},
-                                ),
-                                MaterialButton(
-                                  minWidth: 0,
-                                  padding: EdgeInsets.zero,
-                                  shape: const CircleBorder(),
-                                  child: const Text(
-                                    "😮",
-                                    style:
-                                    TextStyle(fontSize: 32),
-                                  ),
-                                  onPressed: () {},
-                                ),
-                                MaterialButton(
-                                  minWidth: 0,
-                                  padding: EdgeInsets.zero,
-                                  shape: const CircleBorder(),
-                                  child: const Text(
-                                    "😍",
-                                    style:
-                                    TextStyle(fontSize: 32),
-                                  ),
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 30),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceAround,
-                              children: [
-                                MaterialButton(
-                                  minWidth: 0,
-                                  padding: EdgeInsets.zero,
-                                  shape: const CircleBorder(),
-                                  child: const Text(
-                                    "😢",
-                                    style:
-                                    TextStyle(fontSize: 32),
-                                  ),
-                                  onPressed: () {},
-                                ),
-                                MaterialButton(
-                                  minWidth: 0,
-                                  padding: EdgeInsets.zero,
-                                  shape: const CircleBorder(),
-                                  child: const Text(
-                                    "👏",
-                                    style:
-                                    TextStyle(fontSize: 32),
-                                  ),
-                                  onPressed: () {},
-                                ),
-                                MaterialButton(
-                                  minWidth: 0,
-                                  padding: EdgeInsets.zero,
-                                  shape: const CircleBorder(),
-                                  child: const Text(
-                                    "🔥",
-                                    style:
-                                    TextStyle(fontSize: 32),
-                                  ),
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                          ],
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          StoryView(
+            storyItems:storyItems,
+            controller: controller,
+            inline: true,
+            repeat: false,
+            onStoryShow: (s, index) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                print("Showing story at index: $index");
+                onStoryViewed(index); // Notify story viewed
+              });
+              },
+            onComplete: () {
+              Navigator.pop(context); // Navigate back when all stories are completed
+            },
+            progressPosition: ProgressPosition.bottom,
+            onVerticalSwipeComplete: (direction) {
+              if (direction == Direction.down) {
+                Navigator.pop(context); // Close the story view on downward swipe
+              }
+            },
+          ),
+          Positioned(
+            top: 60,
+            left: 20,
+            right: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(user.avatarUrl),
+                    ),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.name,
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
+                        Text(
+                          '6 hours ago', // You can format this to be dynamic
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context); // Close the story view
+                  },
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              color: Colors.black.withOpacity(0.5),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'Send a message...',
+                        hintStyle: TextStyle(color: Colors.white54),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       ),
                     ),
                   ),
-                  likeButton: StoryCardLikeButton(
-                    onLike: (cardLike) {},
+                  IconButton(
+                    icon: Icon(Icons.send, color: Colors.white),
+                    onPressed: () {
+                      // Handle send message action
+                    },
                   ),
-                  forwardButton: StoryCardForwardButton(
-                    onForward: (cardIndex) {},
+                  Container(
+                    child: LikeButton(
+                      padding: EdgeInsets.all(8.0),
+                      circleColor: CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                      bubblesColor: BubblesColor(
+                        dotPrimaryColor: Color(0xff33b5e5),
+                        dotSecondaryColor: Color(0xff0099cc),
+                      ),
+
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
+                          Icons.favorite,
+                          color: isLiked ? Colors.red : Colors.grey,
+                        );
+                      },
+                      likeCount: 0,
+                      countBuilder: (int? count, bool isLiked, String text) {
+                        var color = isLiked ? Colors.red : Colors.grey;
+                        Widget result;
+                        if (count == 0) {
+                          result = Text(
+                            "",
+                            style: TextStyle(color: color),
+                          );
+                        } else
+                          result = Text(
+                            "",
+                            style: TextStyle(color: color),
+                          );
+                        return result;
+                      },
+                    ),
                   ),
-                ),
-                color: card.color,
-                visited: card.visited,
-                cardDuration: card.duration,
-                childOverlay: card.childOverlay,
-                child: card.child,
-              ))
-                  .toList(),
-            );
-          }),
-    );
-  }
-
-  List<StoryModel> getStories() {
-    List<StoryModel> storyList = [];
-    for (int i = 1; i <= 10; i++) {
-      storyList.add(StoryModel(
-          images:
-          "https://i.pinimg.com/originals/e5/14/c7/e514c70eb8c16ad290484fd1ec067d45.jpg",
-          id: i + 2,
-          avatar: Image.network(
-              "https://i.pinimg.com/originals/b2/38/27/b238275379a01045c14d7208be80acd3.jpg"),
-          label: Text(
-            userLabel(i),
-            style: const TextStyle(color: Colors.black),
-          ),
-          cards: [
-            storyCard2(i),
-          ]));
-    }
-    return storyList;
-  }
-
-  String userLabel(int storyIndex) {
-    String label = "";
-    switch (storyIndex) {
-      case 1:
-        return "Oliver";
-      case 2:
-        return "Liam";
-      case 3:
-        return "Benjamin";
-      case 4:
-        return "James";
-      case 5:
-        return "Alexander";
-      case 6:
-        return "John";
-      case 7:
-        return "Ava";
-      case 8:
-        return "Emma";
-      case 9:
-        return "Ava";
-      case 10:
-        return "Lili";
-    }
-    return label;
-  }
-
-  StoryCardModel storyCard2(int i) => StoryCardModel(
-    child: Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xff616161), Color(0xff767676)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 100,
-            color: Colors.white,
-            padding: const EdgeInsets.all(10),
-            child: Center(
-              child: Text(
-                "Saikou",
-                style: const TextStyle(color: Colors.black, fontSize: 20),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Image.network("https://i.pinimg.com/originals/e5/14/c7/e514c70eb8c16ad290484fd1ec067d45.jpg"),
-          const SizedBox(height: 10),
-          Container(
-            width: 250,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: Colors.red.withAlpha(150),
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-            ),
-            child: const Center(
-              child: Text(
-                "This is a container widget",
-                style: TextStyle(color: Colors.black, fontSize: 20),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            width: 350,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                color: Colors.black.withAlpha(50),
-                border: Border.all(color: Colors.white, width: 1)),
-            child: Center(
-              child: Text(
-                "This is a container widget",
-                style:
-                TextStyle(color: Colors.white, fontSize: 20, shadows: [
-                  Shadow(
-                      color: Colors.black.withAlpha(150),
-                      blurRadius: 20,
-                      offset: const Offset(0, 0))
-                ]),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Center(
-            child: Text(
-              "Story $i",
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                shadows: [
-                  Shadow(
-                      color: Colors.red,
-                      blurRadius: 20,
-                      offset: Offset(0, 0))
                 ],
               ),
             ),
           ),
         ],
       ),
-    ),
-  );
+    );
+  }
 }
 
-class StoryModel {
-  StoryModel({
-    this.id,
-    this.avatar,
-    this.images,
-    this.label,
-    this.cards,
-  });
-
-  String? images;
-
-  int? id;
-  Widget? avatar;
-  Text? label;
-  List<StoryCardModel>? cards;
-}
-
-class StoryCardModel {
-  StoryCardModel({
-    this.visited = false,
-    this.duration = const Duration(seconds: 5),
-    this.color = const Color(0xff333333),
-    this.childOverlay,
-    this.child,
-  });
-
-  bool visited;
-  Duration duration;
-  Color color;
-  Widget? childOverlay;
-  Widget? child;
-}

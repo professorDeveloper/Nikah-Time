@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_story/flutter_story.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:laravel_echo2/laravel_echo2.dart';
@@ -14,14 +13,16 @@ import 'package:untitled/Screens/Chat/bloc/chat_list_bloc/chat_bloc.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/Screens/Chat/chat_settings.dart';
 import 'package:untitled/Screens/Chat/chat_with_user.dart';
-import 'package:untitled/Screens/Chat/widgets/story_card.dart';
-import 'package:untitled/Screens/Chat/widgets/story_view.dart';
+import 'package:untitled/Screens/Chat/widgets/add_story_button.dart';
+import 'package:untitled/Screens/Chat/widgets/user_profile.dart';
 import 'package:untitled/Screens/Payment/payment.dart' as payment;
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart' as PB;
 import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/components/widgets/image_viewer.dart';
 import 'package:untitled/components/widgets/likeAnimation.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
+
+import '../../components/models/story_model.dart';
 
 class ChatMainPage extends StatefulWidget {
   ChatMainPage(this.userProfileData, {super.key});
@@ -87,7 +88,6 @@ class ChatMainPageState extends State<ChatMainPage>
     //echo.disconnect();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-    storyController.dispose();
   }
 
   @override
@@ -100,20 +100,45 @@ class ChatMainPageState extends State<ChatMainPage>
   void onResume() {
     FlutterAppBadger.removeBadge();
   }
-
-  final List<String> storyImages = [
-    'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR6EYleKF1cKmcWFPEPVOH9themmyj-LznF8AzLPDNQ4WDAestF',
-    'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTmJpg91cAhagORNOn8MS3yU-wAejGC3-HWV46KQ942X6PI05uV',
-    'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR6EYleKF1cKmcWFPEPVOH9themmyj-LznF8AzLPDNQ4WDAestF',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/640px-Sundar_Pichai_-_2023_%28cropped%29.jpg',
-    'https://media.altchar.com/prod/images/940_530/gm-e10d2519-5a78-4da6-b28e-a423036c8328-pu.jpeg',
+  final List<Story> stories = [
+    Story(url: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg', type: StoryType.image),
+    Story(url: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg', type: StoryType.image),
+    Story(url: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg', type: StoryType.video),
+    // Add more Story objects here
   ];
-  StoryController storyController = StoryController();
+  final User myUser = User(
+    name: 'Myself',
+    avatarUrl: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg',
+    stories: [],  // Add your stories here
+    userType: UserType.self,
+  );
+
+  final List<User> otherUsers = [
+    User(
+      name: 'User 1',
+      avatarUrl: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg',
+      stories: [
+        Story(url: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg', type: StoryType.image),
+        Story(url: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg', type: StoryType.image),
+      ],
+      userType: UserType.others,
+    ),
+    User(
+      name: 'User 2',
+      avatarUrl: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg',
+      stories: [
+        Story(url: 'https://firebasestorage.googleapis.com/v0/b/soplay-bd7c8.appspot.com/o/An8wSdSQD486_4hq0ViruvBmuOK9_3TdelBzU5lG9IC2kcgSJHW08Yt3T0Ee8JT.mp4?alt=media&token=6151aafb-9142-4816-aed3-9e99788d9688', type: StoryType.video),
+        Story(url: 'https://firebasestorage.googleapis.com/v0/b/soplay-bd7c8.appspot.com/o/video_2024-08-02_23-24-36.mp4?alt=media&token=2db6fa2c-7a7d-4441-a8e7-227d12b38ebe', type: StoryType.video),
+      ],
+      userType: UserType.others,
+    ),
+    // Add more User objects here
+  ];
 
   @override
   Widget build(BuildContext context) {
     PB.ProfileInitial state =
-        context.read<PB.ProfileBloc>().state as PB.ProfileInitial;
+    context.read<PB.ProfileBloc>().state as PB.ProfileInitial;
     bool needPay = state.userProfileData?.userTariff == null;
 
     if (needPay) {
@@ -149,7 +174,7 @@ class ChatMainPageState extends State<ChatMainPage>
       children: [
         const CircularProgressIndicator(
           valueColor:
-              AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
+          AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
         ),
         const SizedBox(
           height: 16,
@@ -169,6 +194,7 @@ class ChatMainPageState extends State<ChatMainPage>
   }
 
   Widget mainPage(BuildContext context, ChatInitial state) {
+    List<User> users = [myUser] + otherUsers;
     return Container(
       margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       width: double.infinity,
@@ -230,141 +256,34 @@ class ChatMainPageState extends State<ChatMainPage>
           const SizedBox(
             height: 16,
           ),
-          Story.builder(
-              controller: storyController,
-              itemCount: 2,
+          Container(
+            height: 124,
+            margin: const EdgeInsets.symmetric(horizontal: 1.0), // Adjust margin here
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: users.length,
               itemBuilder: (context, index) {
-                StoryModel s = getStories()[index];
-                return StoryUser(
-                  width: 70,
-                  margin: EdgeInsets.all(2),
-                  height: 70,
+                User user = users[index];
 
-                  avatar: s.avatar,
-                  label: s.label,
-                  children: s.cards == null
-                      ? []
-                      : s.cards!
-                          .map((card) => StoryCard(
-                                onVisited: (cardIndex) {
-                                  setState(() {
-                                    card.visited = true;
-                                  });
-                                },
-                                footer: StoryCardFooter(
-                                  messageBox: StoryCardMessageBox(
-                                    child: Center(
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                1.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                1.5,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                MaterialButton(
-                                                  minWidth: 0,
-                                                  padding: EdgeInsets.zero,
-                                                  shape: const CircleBorder(),
-                                                  child: const Text(
-                                                    "😂",
-                                                    style:
-                                                        TextStyle(fontSize: 32),
-                                                  ),
-                                                  onPressed: () {},
-                                                ),
-                                                MaterialButton(
-                                                  minWidth: 0,
-                                                  padding: EdgeInsets.zero,
-                                                  shape: const CircleBorder(),
-                                                  child: const Text(
-                                                    "😮",
-                                                    style:
-                                                        TextStyle(fontSize: 32),
-                                                  ),
-                                                  onPressed: () {},
-                                                ),
-                                                MaterialButton(
-                                                  minWidth: 0,
-                                                  padding: EdgeInsets.zero,
-                                                  shape: const CircleBorder(),
-                                                  child: const Text(
-                                                    "😍",
-                                                    style:
-                                                        TextStyle(fontSize: 32),
-                                                  ),
-                                                  onPressed: () {},
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 30),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                MaterialButton(
-                                                  minWidth: 0,
-                                                  padding: EdgeInsets.zero,
-                                                  shape: const CircleBorder(),
-                                                  child: const Text(
-                                                    "😢",
-                                                    style:
-                                                        TextStyle(fontSize: 32),
-                                                  ),
-                                                  onPressed: () {},
-                                                ),
-                                                MaterialButton(
-                                                  minWidth: 0,
-                                                  padding: EdgeInsets.zero,
-                                                  shape: const CircleBorder(),
-                                                  child: const Text(
-                                                    "👏",
-                                                    style:
-                                                        TextStyle(fontSize: 32),
-                                                  ),
-                                                  onPressed: () {},
-                                                ),
-                                                MaterialButton(
-                                                  minWidth: 0,
-                                                  padding: EdgeInsets.zero,
-                                                  shape: const CircleBorder(),
-                                                  child: const Text(
-                                                    "🔥",
-                                                    style:
-                                                        TextStyle(fontSize: 32),
-                                                  ),
-                                                  onPressed: () {},
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  likeButton: StoryCardLikeButton(
-                                    onLike: (cardLike) {},
-                                  ),
-                                  forwardButton: StoryCardForwardButton(
-                                    onForward: (cardIndex) {},
-                                  ),
-                                ),
-                                color: card.color,
-                                visited: card.visited,
-                                cardDuration: card.duration,
-                                childOverlay: card.childOverlay,
-                                child: card.child,
-                              ))
-                          .toList(),
-                );
-              }),
+                if (user.userType == UserType.self) {
+                  return user.stories.isEmpty
+                      ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddStoryPage()),
+                      );
+                    },
+                    child: AddStoryButton(),
+                  )
+                      : UserProfile(user: user);
+                } else {
+                  return UserProfile(user: user);
+                }
+              },
+            ),
+          ),
           const SizedBox(
             height: 4,
           ),
@@ -377,13 +296,13 @@ class ChatMainPageState extends State<ChatMainPage>
                   suffixIcon: (searchFieldTextController.text.isEmpty)
                       ? const Icon(Icons.search_sharp)
                       : IconButton(
-                          onPressed: () async {
-                            searchFieldTextController.text = "";
-                            context
-                                .read<ChatBloc>()
-                                .add(const SearchChat(searchString: ""));
-                          },
-                          icon: const Icon(Icons.close)),
+                      onPressed: () async {
+                        searchFieldTextController.text = "";
+                        context
+                            .read<ChatBloc>()
+                            .add(const SearchChat(searchString: ""));
+                      },
+                      icon: const Icon(Icons.close)),
                   hintText: LocaleKeys.chat_main_find.tr(),
                   enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
@@ -452,7 +371,7 @@ class ChatMainPageState extends State<ChatMainPage>
         ).then((_) {
           context.read<ChatBloc>().add(const LoadChatList());
           final provider =
-              Provider.of<NotSeenMessagesProvider>(context, listen: false);
+          Provider.of<NotSeenMessagesProvider>(context, listen: false);
           provider.GetNumberNotSeenMessagesFromServer(
               widget.userProfileData.accessToken.toString());
         });
@@ -469,8 +388,8 @@ class ChatMainPageState extends State<ChatMainPage>
                     width: 48,
                     height: 48,
                     child: displayImageMiniature(chatInfo.avatar?.preview ?? ""
-                        //chatInfo.userAvatar.toString()
-                        )),
+                      //chatInfo.userAvatar.toString()
+                    )),
               ),
               Visibility(
                 visible: chatInfo.isOnline == true,
@@ -543,17 +462,17 @@ class ChatMainPageState extends State<ChatMainPage>
                     ),
                     Expanded(
                         child: Text(
-                      lastMessageField(chatInfo),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: GoogleFonts.rubik(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: (chatInfo.lastMessageType != "text")
-                            ? const Color.fromARGB(180, 0, 0, 255)
-                            : const Color.fromARGB(180, 33, 33, 33),
-                      ),
-                    ))
+                          lastMessageField(chatInfo),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: GoogleFonts.rubik(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: (chatInfo.lastMessageType != "text")
+                                ? const Color.fromARGB(180, 0, 0, 255)
+                                : const Color.fromARGB(180, 33, 33, 33),
+                          ),
+                        ))
                   ],
                 )
               ],
@@ -582,24 +501,24 @@ class ChatMainPageState extends State<ChatMainPage>
                 padding: const EdgeInsets.only(right: 16),
                 child: (chatInfo.numberNotSeenMessages! > 0)
                     ? Container(
-                        //padding: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        width: 12,
-                        height: 12,
-                        child: Center(
-                          child: Text(
-                            '${chatInfo.numberNotSeenMessages!}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      )
+                  //padding: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  width: 12,
+                  height: 12,
+                  child: Center(
+                    child: Text(
+                      '${chatInfo.numberNotSeenMessages!}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
                     : null,
               )
             ],
@@ -692,36 +611,4 @@ class ChatMainPageState extends State<ChatMainPage>
       },
     );
   }
-
-  List<StoryModel> getStories() {
-    List<StoryModel> storyList = [];
-    storyList.add(StoryModel(
-        id: 1,
-        avatar: Image.network(storyImages[1],      fit: BoxFit.cover, // centerCrop ga o'xshash
-        ),
-        label: Text(
-          "Kriwna",
-          style: const TextStyle(color: Colors.black),
-        ),
-        cards: [
-          storyCard1(1),
-          storyCard2("https://i.pinimg.com/originals/9c/0c/1f/9c0c1f0855a9551d345291400d066ebb.jpg"),
-          storyCard2("https://i.pinimg.com/originals/6f/36/c8/6f36c8cf4d7767302f7c2d54663735b9.jpg")
-        ]));
-    storyList.add(StoryModel(
-        id: 2,
-        avatar: Image.network(storyImages[2],fit: BoxFit.cover,),
-        label: Text(
-          "Saikou",
-          style: const TextStyle(color: Colors.black),
-        ),
-        cards: [
-          storyCard2("https://i.pinimg.com/originals/11/dd/b9/11ddb951f26e29588dfc837e488a3a37.jpg"),
-          storyCard2("https://i.pinimg.com/originals/2b/21/e9/2b21e9484e4ab92a70af2e960f9998a4.jpg"),
-          storyCard1(2),
-        ]));
-    return storyList;
-  }
-
-
 }
