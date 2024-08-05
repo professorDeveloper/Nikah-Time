@@ -13,6 +13,7 @@ import 'package:untitled/Screens/Chat/bloc/chat_list_bloc/chat_bloc.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/Screens/Chat/chat_settings.dart';
 import 'package:untitled/Screens/Chat/chat_with_user.dart';
+import 'package:untitled/Screens/Chat/story/add_story.dart';
 import 'package:untitled/Screens/Chat/widgets/add_story_button.dart';
 import 'package:untitled/Screens/Chat/widgets/user_profile.dart';
 import 'package:untitled/Screens/Payment/payment.dart' as payment;
@@ -21,6 +22,7 @@ import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/components/widgets/image_viewer.dart';
 import 'package:untitled/components/widgets/likeAnimation.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
+import 'package:untitled/Screens/Chat/story/add_story.dart' as story_add;
 
 import '../../components/models/story_model.dart';
 
@@ -109,7 +111,8 @@ class ChatMainPageState extends State<ChatMainPage>
   final User myUser = User(
     name: 'Myself',
     avatarUrl: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg',
-    stories: [],  // Add your stories here
+    stories: [
+    ],  // Add your stories here
     userType: UserType.self,
   );
 
@@ -272,7 +275,7 @@ class ChatMainPageState extends State<ChatMainPage>
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddStoryPage()),
+                        MaterialPageRoute(builder: (context) => story_add.AddStoryPage()),
                       );
                     },
                     child: AddStoryButton(),

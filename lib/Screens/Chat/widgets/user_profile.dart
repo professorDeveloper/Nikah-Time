@@ -41,7 +41,10 @@ class _UserProfileState extends State<UserProfile> {
             context,
             MaterialPageRoute(
               builder: (context) => widget.user.userType == UserType.self
-                  ? MyStoryViewPage()
+                  ? MyStoryViewPage(
+                      stories: widget.user.stories,
+                      user: widget.user,
+                    )
                   : StoryViewPage(
                       stories: widget.user.stories,
                       initialIndex: 0,
