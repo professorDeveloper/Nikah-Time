@@ -21,6 +21,13 @@
 	</array>
 	<key>CFBundleName</key>
 	<string>Nikah Time</string>
+	<key>NSCameraUsageDescription</key>
+    <string>We need to access your camera to take pictures for stories.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need to access your microphone to record videos for stories.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to select images for stories.</string>
+
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -77,5 +84,6 @@
 	<false/>
 	<key>beta-reports-active</key>
 	<true/>
+
 </dict>
 </plist>

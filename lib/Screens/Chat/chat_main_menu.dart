@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
@@ -22,7 +23,6 @@ import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/components/widgets/image_viewer.dart';
 import 'package:untitled/components/widgets/likeAnimation.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
-import 'package:untitled/Screens/Chat/story/add_story.dart' as story_add;
 
 import '../../components/models/story_model.dart';
 
@@ -275,7 +275,7 @@ class ChatMainPageState extends State<ChatMainPage>
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => story_add.AddStoryPage()),
+                        MaterialPageRoute(builder: (context) => AddStoryPage( )),
                       );
                     },
                     child: AddStoryButton(),
