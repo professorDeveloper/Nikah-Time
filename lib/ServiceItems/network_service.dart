@@ -39,7 +39,7 @@ class NetworkService {
     _dio.options.headers["accept"] = "application/json";
   }
 
-  final String baseUrl = "https://www.nikahtime.ru/api";
+  final String baseUrl = "https://nikahtime.ru/api"; // story didn`t use socket  i think i will work with dev api
 //LOGIN
   final String login = "/login";
 //REGISTRATION

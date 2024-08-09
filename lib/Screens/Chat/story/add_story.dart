@@ -1,193 +1,164 @@
 import 'dart:io';
-
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-class AddStoryPage extends StatefulWidget {
-  @override
-  _AddStoryPageState createState() => _AddStoryPageState();
-}
+class AddStoryPage extends StatelessWidget {
+  final File imageFile;
 
-class _AddStoryPageState extends State<AddStoryPage> {
-  String _storyText = '';
-  XFile? _storyImage;
-  final ImagePicker _picker = ImagePicker();
-  CameraController? _cameraController;
-  late List<CameraDescription> _cameras;
-  bool _isCameraInitialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeCamera();
-  }
-
-  Future<void> _initializeCamera() async {
-    _cameras = await availableCameras();
-    _cameraController = CameraController(
-      _cameras[0],
-      ResolutionPreset.high,
-    );
-
-    await _cameraController?.initialize();
-    setState(() {
-      _isCameraInitialized = true;
-    });
-  }
-
-  @override
-  void dispose() {
-    _cameraController?.dispose();
-    super.dispose();
-  }
+  AddStoryPage({required this.imageFile});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Story'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.check),
-            onPressed: _postStory,
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          if (_storyImage != null)
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Display the selected image
             Image.file(
-              File(_storyImage!.path),
-              fit: BoxFit.cover,
+              imageFile,
               width: double.infinity,
               height: double.infinity,
-            )
-          else if (_isCameraInitialized)
-            CameraPreview(_cameraController!)
-          else
-            Center(child: CircularProgressIndicator()),
-          if (_storyText.isNotEmpty)
-            Center(
-              child: Text(
-                _storyText,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  backgroundColor: Colors.black54,
+              fit: BoxFit.cover,
+            ),
+
+            // Bottom bar with actions
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                color: Colors.black.withOpacity(0.5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Back button with gradient border
+                    GradientStrokeButton(
+                      icon: Icons.arrow_back,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    // Action icons (without gradient)
+                    IconButton(
+                      icon: Icon(Icons.crop, color: Colors.white),
+                      onPressed: () {
+                        // Handle crop action
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.auto_awesome, color: Colors.white),
+                      onPressed: () {
+                        // Handle filter/action
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.text_fields, color: Colors.white),
+                      onPressed: () {
+                        // Handle text action
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.emoji_emotions, color: Colors.white),
+                      onPressed: () {
+                        // Handle emoji action
+                      },
+                    ),
+                    // Next button with gradient
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xffFB457E), Color(0xff8048F9)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Add your post story logic here
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: Text(
+                          'Далее',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
-          _buildBottomToolbar(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera_alt),
-        onPressed: _capturePhoto,
-      ),
-    );
-  }
-
-  Widget _buildBottomToolbar() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              icon: Icon(Icons.text_fields),
-              onPressed: _addText,
-              color: Colors.white,
-            ),
-            IconButton(
-              icon: Icon(Icons.photo),
-              onPressed: _pickImage,
-              color: Colors.white,
-            ),
-            // Additional icons for stickers, etc., can be added here
           ],
         ),
       ),
     );
   }
+}
 
-  Future<void> _addText() async {
-    final result = await showDialog<String>(
-      context: context,
-      builder: (context) => _TextInputDialog(),
+// Custom widget to create a gradient icon button with border
+class GradientIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  GradientIconButton({required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          colors: [Color(0xffFB457E), Color(0xff8048F9)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white),
+        onPressed: onPressed,
+        padding: EdgeInsets.all(8),
+      ),
     );
-
-    if (result != null) {
-      setState(() {
-        _storyText = result;
-      });
-    }
-  }
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _storyImage = pickedFile;
-        _cameraController?.dispose();
-        _isCameraInitialized = false;
-      });
-    }
-  }
-
-  Future<void> _capturePhoto() async {
-    if (_cameraController != null && _cameraController!.value.isInitialized) {
-      final image = await _cameraController!.takePicture();
-      setState(() {
-        _storyImage = image;
-        _cameraController?.dispose();
-        _isCameraInitialized = false;
-      });
-    }
-  }
-
-  void _postStory() {
-    // Handle posting the story here
-    print('Story Posted');
-    print('Text: $_storyText');
-    if (_storyImage != null) {
-      print('Image: ${_storyImage!.path}');
-    }
   }
 }
 
-class _TextInputDialog extends StatelessWidget {
+// Custom widget to create a gradient stroke button with border color
+class GradientStrokeButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  GradientStrokeButton({required this.icon, required this.onPressed});
+
   @override
   Widget build(BuildContext context) {
-    String _text = '';
-
-    return AlertDialog(
-      title: Text('Enter Text'),
-      content: TextField(
-        onChanged: (value) {
-          _text = value;
-        },
-        decoration: InputDecoration(hintText: 'Type your story text here'),
+    return Container(
+      width: 50, // Width of the button
+      height: 50, // Height of the button
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [Color(0xffFB457E), Color(0xff8048F9)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(
+          width: 2, // Width of the stroke
+          color: Colors.white, // Color of the stroke
+        ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('Cancel'),
+      child: Center(
+        child: IconButton(
+          icon: Icon(icon, color: Colors.white),
+          onPressed: onPressed,
+          padding: EdgeInsets.all(8),
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(_text);
-          },
-          child: Text('Add'),
-        ),
-      ],
+      ),
     );
   }
 }

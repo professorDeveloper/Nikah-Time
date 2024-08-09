@@ -15,6 +15,7 @@ import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/Screens/Chat/chat_settings.dart';
 import 'package:untitled/Screens/Chat/chat_with_user.dart';
 import 'package:untitled/Screens/Chat/story/add_story.dart';
+import 'package:untitled/Screens/Chat/story/camera_page.dart';
 import 'package:untitled/Screens/Chat/widgets/add_story_button.dart';
 import 'package:untitled/Screens/Chat/widgets/user_profile.dart';
 import 'package:untitled/Screens/Payment/payment.dart' as payment;
@@ -77,7 +78,7 @@ class ChatMainPageState extends State<ChatMainPage>
   }
 
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     debugPrint("init chat_main_menu");
     WidgetsBinding.instance.addObserver(this);
@@ -139,7 +140,7 @@ class ChatMainPageState extends State<ChatMainPage>
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     PB.ProfileInitial state =
     context.read<PB.ProfileBloc>().state as PB.ProfileInitial;
     bool needPay = state.userProfileData?.userTariff == null;
@@ -275,7 +276,7 @@ class ChatMainPageState extends State<ChatMainPage>
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddStoryPage( )),
+                        MaterialPageRoute(builder: (context) => CameraPage( )),
                       );
                     },
                     child: AddStoryButton(),
