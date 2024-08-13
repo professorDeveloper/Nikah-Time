@@ -273,11 +273,25 @@ class ChatMainPageState extends State<ChatMainPage>
                 if (user.userType == UserType.self) {
                   return user.stories.isEmpty
                       ? GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => CameraPage( )),
-                      );
+                    onTap: () async {
+                      // Retrieve available cameras
+                      List<CameraDescription> cameras = await availableCameras();
+
+                      if (cameras != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CameraPage( cameras: cameras,),
+                          ),
+                        );
+                      } else {
+                        // Handle case where no camera is available
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('No camera available!'),
+                          ),
+                        );
+                      }
                     },
                     child: AddStoryButton(),
                   )

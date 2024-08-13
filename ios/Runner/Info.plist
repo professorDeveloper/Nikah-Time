@@ -27,6 +27,8 @@
     <string>We need to access your microphone to record videos for stories.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>We need access to your photo library to select images for stories.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Example usage description</string>
 
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>

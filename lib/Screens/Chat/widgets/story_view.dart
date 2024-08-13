@@ -62,7 +62,6 @@ class StoryViewPage extends StatelessWidget {
             onComplete: () {
               Navigator.pop(context); // Navigate back when all stories are completed
             },
-            progressPosition: ProgressPosition.bottom,
             onVerticalSwipeComplete: (direction) {
               if (direction == Direction.down) {
                 Navigator.pop(context); // Close the story view on downward swipe

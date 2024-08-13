@@ -772,6 +772,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  image:
+    dependency: "direct main"
+    description:
+      name: image
+      sha256: "8e9d133755c3e84c73288363e6343157c383a0c6c56fc51afcc5d4d7180306d6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.0"
   image_picker:
     dependency: "direct main"
     description:
@@ -1181,6 +1189,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
+  photo_gallery:
+    dependency: "direct main"
+    description:
+      name: photo_gallery
+      sha256: f8daca29042710ba2836a0666f0d18b320e286b5843dcd68d6f1980a2de0c8b2
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   photo_view:
     dependency: "direct main"
     description:
@@ -1650,6 +1666,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  video_compress:
+    dependency: "direct main"
+    description:
+      name: video_compress
+      sha256: "407693726e674a1e1958801deb2d9daf5a5297707ba6d03375007012dae7389a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   video_player:
     dependency: "direct main"
     description:
