@@ -1,10 +1,31 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:photofilters/photofilters.dart';
+import 'package:image/image.dart' as imageLib;
+import 'package:path/path.dart';
 
-class AddStoryPage extends StatelessWidget {
+class AddStoryPage extends StatefulWidget {
   final File imageFile;
 
   AddStoryPage({required this.imageFile});
+
+  @override
+  _AddStoryPageState createState() => _AddStoryPageState();
+}
+
+class _AddStoryPageState extends State<AddStoryPage> {
+  late File _editedImage;
+  TextEditingController _textEditingController = TextEditingController();
+  bool _showEmojiPicker = false;
+  List<Filter> filters = presetFiltersList;
+
+  @override
+  void initState() {
+    super.initState();
+    _editedImage = widget.imageFile;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,13 +34,28 @@ class AddStoryPage extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // Display the selected image
+            // Display the edited image
             Image.file(
-              imageFile,
+              _editedImage,
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
             ),
+
+            // Overlay text on the image
+            if (_textEditingController.text.isNotEmpty)
+              Positioned(
+                left: 20,
+                top: 20,
+                child: Text(
+                  _textEditingController.text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
 
             // Bottom bar with actions
             Align(
@@ -30,100 +66,145 @@ class AddStoryPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Back button with gradient border
+                    // Back button
                     GradientStrokeButton(
                       icon: Icons.arrow_back,
                       onPressed: () {
                         Navigator.pop(context);
                       },
                     ),
-                    // Action icons (without gradient)
+                    // Action icons
                     IconButton(
                       icon: Icon(Icons.crop, color: Colors.white),
-                      onPressed: () {
-                        // Handle crop action
-                      },
+                      onPressed: () => _cropImage(context),
                     ),
                     IconButton(
                       icon: Icon(Icons.auto_awesome, color: Colors.white),
-                      onPressed: () {
-                        // Handle filter/action
-                      },
+                      onPressed: () => _applyFilter(context),
                     ),
                     IconButton(
                       icon: Icon(Icons.text_fields, color: Colors.white),
-                      onPressed: () {
-                        // Handle text action
-                      },
+                      onPressed: () => _addText(context),
                     ),
                     IconButton(
                       icon: Icon(Icons.emoji_emotions, color: Colors.white),
                       onPressed: () {
-                        // Handle emoji action
+                        setState(() {
+                          _showEmojiPicker = !_showEmojiPicker;
+                        });
                       },
                     ),
-                    // Next button with gradient
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xffFB457E), Color(0xff8048F9)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Add your post story logic here
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: Text(
-                          'Далее',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
-                    )
+                    // Next button
+                    NextButton(
+                      text: 'Далее',
+                      onPressed: () {
+                        // Add your post story logic here
+                      },
+                    ),
                   ],
                 ),
               ),
             ),
+
+            // Emoji picker
+            if (_showEmojiPicker)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: EmojiPicker(
+                  onEmojiSelected: (category, emoji) {
+                    _textEditingController.text += emoji.emoji;
+                  },
+                  config: Config(
+                    columns: 7,
+                    emojiSizeMax: 32,
+                    bgColor: Colors.black,
+                    indicatorColor: Colors.white,
+                    iconColorSelected: Colors.white,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
     );
   }
-}
 
-// Custom widget to create a gradient icon button with border
-class GradientIconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
+  Future<void> _cropImage(BuildContext context) async {
+    CroppedFile? cropped = await ImageCropper().cropImage(
+      sourcePath: _editedImage.path,
+      cropStyle: CropStyle.rectangle,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: Colors.black,
+          toolbarWidgetColor: Colors.white,
+          activeControlsWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false,
+        ),
+        IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ),
+      ],
+    );
 
-  GradientIconButton({required this.icon, required this.onPressed});
+    if (cropped != null) {
+      setState(() {
+        _editedImage = File(cropped.path);
+      });
+    }
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
+  Future<void> _applyFilter(BuildContext context) async {
+    var image = imageLib.decodeImage(_editedImage.readAsBytesSync());
+    image = imageLib.copyResize(image!, width: 600);
 
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        gradient: LinearGradient(
-          colors: [Color(0xffFB457E), Color(0xff8048F9)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    Map imageFile = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoFilterSelector(
+          title: Text("Apply Filter"),
+          image: image!,
+          filters: filters,
+          filename: basename(_editedImage.path),
+          loader: Center(child: CircularProgressIndicator()),
+          fit: BoxFit.contain,
         ),
       ),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.white),
-        onPressed: onPressed,
-        padding: EdgeInsets.all(8),
-      ),
+    );
+    if (imageFile.containsKey('image_filtered')) {
+      setState(() {
+        _editedImage = imageFile['image_filtered'];
+      });
+    }
+  }
+
+  void _addText(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          title: Text("Add Text", style: TextStyle(color: Colors.white)),
+          content: TextField(
+            controller: _textEditingController,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "Enter your text",
+              hintStyle: TextStyle(color: Colors.white54),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {});
+                Navigator.pop(context);
+              },
+              child: Text("OK", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -138,25 +219,53 @@ class GradientStrokeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50, // Width of the button
-      height: 50, // Height of the button
+      width: 50,
+      height: 50,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [Color(0xffFB457E), Color(0xff8048F9)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
         border: Border.all(
-          width: 2, // Width of the stroke
-          color: Colors.white, // Color of the stroke
+          width: 2,
+          color: Colors.white,
         ),
       ),
-      child: Center(
-        child: IconButton(
-          icon: Icon(icon, color: Colors.white),
-          onPressed: onPressed,
-          padding: EdgeInsets.all(8),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white),
+        onPressed: onPressed,
+        padding: EdgeInsets.all(0),
+      ),
+    );
+  }
+}
+
+// Custom widget for the "Next" button
+class NextButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+
+  NextButton({required this.text, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xff1EC760),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          primary: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
         ),
       ),
     );

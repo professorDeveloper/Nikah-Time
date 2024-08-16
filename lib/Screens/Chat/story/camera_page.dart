@@ -5,8 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
-import 'package:video_compress/video_compress.dart';
-import 'add_story.dart'; // Assuming this page is for images
+import 'add_story.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -24,7 +23,6 @@ class _CameraPageState extends State<CameraPage> {
   int _selectedCameraIndex = 0;
   bool _isPhotoMode = true;
   bool _isFlashOn = false;
-  bool _isRecording = false;
 
   @override
   void initState() {
@@ -37,7 +35,7 @@ class _CameraPageState extends State<CameraPage> {
     _controller = CameraController(
       widget.cameras[_selectedCameraIndex],
       ResolutionPreset.high,
-      enableAudio: true,
+      enableAudio: false,
     );
     _initializeControllerFuture = _controller.initialize();
   }
@@ -82,21 +80,14 @@ class _CameraPageState extends State<CameraPage> {
 
   void _showGalleryBottomSheet() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      File videoFile = File(pickedFile.path);
-      if (await videoFile.length() <= 10 * 1024 * 1024) {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => AddVideoPage(videoFile: videoFile),
-        //   ),
-        // );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Video must be 10 MB or less')),
-        );
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddStoryPage(imageFile: File(pickedFile.path)),
+        ),
+      );
     }
   }
 
@@ -121,7 +112,7 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
-  Future<void> _takePicture() async {
+  void _takePicture() async {
     try {
       await _initializeControllerFuture;
       final image = await _controller.takePicture();
@@ -142,56 +133,6 @@ class _CameraPageState extends State<CameraPage> {
       );
     } catch (e) {
       print(e);
-    }
-  }
-
-  Future<void> _startVideoRecording() async {
-    if (!_controller.value.isRecordingVideo) {
-      try {
-        await _initializeControllerFuture;
-        await _controller.startVideoRecording();
-        setState(() {
-          _isRecording = true;
-        });
-
-        // Stop recording after 10 seconds
-        await Future.delayed(Duration(seconds: 10));
-        _stopVideoRecording();
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  Future<void> _stopVideoRecording() async {
-    if (_controller.value.isRecordingVideo) {
-      try {
-        final videoFile = await _controller.stopVideoRecording();
-        setState(() {
-          _isRecording = false;
-        });
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => AddVideoPage(videoFile: File(videoFile.path)),
-        //   ),
-        // );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  void _onRecordButtonPressed() {
-    if (_isPhotoMode) {
-      _takePicture();
-    } else {
-      if (_isRecording) {
-        _stopVideoRecording();
-      } else {
-        _startVideoRecording();
-      }
     }
   }
 
@@ -254,9 +195,7 @@ class _CameraPageState extends State<CameraPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: _isPhotoMode
-                            ? _showGalleryBottomSheet
-                            : () => _showGalleryBottomSheet(),
+                        onTap: _showGalleryBottomSheet,
                         child: Container(
                           width: 70.0,
                           height: 70.0,
@@ -277,7 +216,7 @@ class _CameraPageState extends State<CameraPage> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: _onRecordButtonPressed,
+                        onTap: _takePicture,
                         child: Container(
                           width: 70.0,
                           height: 70.0,

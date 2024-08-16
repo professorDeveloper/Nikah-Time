@@ -352,6 +352,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.2"
+  emoji_picker_flutter:
+    dependency: "direct main"
+    description:
+      name: emoji_picker_flutter
+      sha256: "8506341d62efd116d6fb1481450bffdbac659d3d90d46d9cc610bfae5f33cc54"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.4"
   equatable:
     dependency: "direct main"
     description:
@@ -668,6 +676,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  gallery_saver:
+    dependency: "direct main"
+    description:
+      name: gallery_saver
+      sha256: a89320634c683524a144f375b9eb053aa8ad9036d7a6d18187aa4d3d4df7a00d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   glob:
     dependency: transitive
     description:
@@ -780,6 +796,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
+  image_cropper:
+    dependency: "direct main"
+    description:
+      name: image_cropper
+      sha256: bf7dc8c92f985a2aa9b982e481ac3f12c8bc5cbb97ac67582c67d05e7903dca9
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
+  image_cropper_for_web:
+    dependency: transitive
+    description:
+      name: image_cropper_for_web
+      sha256: "809669d0fc548ecb4b55e3cf34b7959994c5ff8a57a415d5f3183acf77982269"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
+  image_cropper_platform_interface:
+    dependency: transitive
+    description:
+      name: image_cropper_platform_interface
+      sha256: "4288cc502e39e7bac7d9f3d68fa4123a27fa6d8dda685908943c71d9be41c857"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   image_picker:
     dependency: "direct main"
     description:
@@ -1205,6 +1245,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.14.0"
+  photofilters:
+    dependency: "direct main"
+    description:
+      name: photofilters
+      sha256: "757197a7b54b4db36eed3fbdf0afcc8cc3b9058b1242c8f6675426aca1b56d39"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   pin_code_fields:
     dependency: "direct main"
     description:

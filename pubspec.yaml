@@ -20,6 +20,10 @@ dependencies:
   flutter_svg: ^2.0.7
   provider: ^6.0.0
   google_fonts: any
+  gallery_saver: 2.3.0
+  emoji_picker_flutter: ^1.0.0
+  image_cropper: ^2.0.0
+  photofilters: ^3.0.0
   pin_code_fields: ^8.0.1
   dropdown_plus: ^0.0.9
   image_picker: ^1.0.0
