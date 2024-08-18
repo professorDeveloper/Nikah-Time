@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../components/models/story_model.dart';
 
 class AddStoryButton extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -59,16 +60,3 @@ class AddStoryButton extends StatelessWidget {
 }
 
 
-class AddStoryPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Story'),
-      ),
-      body: Center(
-        child: Text('Add Story Page'),
-      ),
-    );
-  }
-}

@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-   <key>NSMicrophoneUsageDescription</key>
-   <string>We need to access to the microphone to record audio file</string>
 	<key>NSContactsUsageDescription</key>
     <string>We need access to your contacts to display them.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
@@ -23,6 +21,15 @@
 	</array>
 	<key>CFBundleName</key>
 	<string>Nikah Time</string>
+	<key>NSCameraUsageDescription</key>
+    <string>We need to access your camera to take pictures for stories.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need to access your microphone to record videos for stories.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to select images for stories.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Example usage description</string>
+
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -79,7 +86,6 @@
 	<false/>
 	<key>beta-reports-active</key>
 	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+
 </dict>
 </plist>

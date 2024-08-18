@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
@@ -13,6 +14,8 @@ import 'package:untitled/Screens/Chat/bloc/chat_list_bloc/chat_bloc.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/Screens/Chat/chat_settings.dart';
 import 'package:untitled/Screens/Chat/chat_with_user.dart';
+import 'package:untitled/Screens/Chat/story/add_story.dart';
+import 'package:untitled/Screens/Chat/story/camera_page.dart';
 import 'package:untitled/Screens/Chat/widgets/add_story_button.dart';
 import 'package:untitled/Screens/Chat/widgets/user_profile.dart';
 import 'package:untitled/Screens/Payment/payment.dart' as payment;
@@ -75,7 +78,7 @@ class ChatMainPageState extends State<ChatMainPage>
   }
 
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     debugPrint("init chat_main_menu");
     WidgetsBinding.instance.addObserver(this);
@@ -109,7 +112,8 @@ class ChatMainPageState extends State<ChatMainPage>
   final User myUser = User(
     name: 'Myself',
     avatarUrl: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg',
-    stories: [],  // Add your stories here
+    stories: [
+    ],  // Add your stories here
     userType: UserType.self,
   );
 
@@ -136,7 +140,7 @@ class ChatMainPageState extends State<ChatMainPage>
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     PB.ProfileInitial state =
     context.read<PB.ProfileBloc>().state as PB.ProfileInitial;
     bool needPay = state.userProfileData?.userTariff == null;
@@ -269,11 +273,25 @@ class ChatMainPageState extends State<ChatMainPage>
                 if (user.userType == UserType.self) {
                   return user.stories.isEmpty
                       ? GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AddStoryPage()),
-                      );
+                    onTap: () async {
+                      // Retrieve available cameras
+                      List<CameraDescription> cameras = await availableCameras();
+
+                      if (cameras != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CameraPage( cameras: cameras,),
+                          ),
+                        );
+                      } else {
+                        // Handle case where no camera is available
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('No camera available!'),
+                          ),
+                        );
+                      }
                     },
                     child: AddStoryButton(),
                   )
