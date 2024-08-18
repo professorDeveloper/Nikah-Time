@@ -46,6 +46,16 @@ class SendTextMessage extends ChatWithUserEvent {
         text,
       ];
 }
+class SendVoiceMessage extends ChatWithUserEvent {
+  final File file;
+  final String fileType;
+
+   const SendVoiceMessage({required this.file, required this.fileType});
+
+  @override
+  List<Object?> get props => [file, fileType];
+
+}
 
 class SendFile extends ChatWithUserEvent {
   final File file;

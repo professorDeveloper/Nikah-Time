@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:core';
 import 'dart:io';
 import 'dart:ui';
 import 'package:custom_pop_up_menu_fork/custom_pop_up_menu.dart';
@@ -15,6 +16,8 @@ import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/Screens/Chat/bloc/chat_with_user/chat_with_user_bloc.dart';
@@ -52,6 +55,12 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
   TextEditingController messageController = TextEditingController();
   final ScrollController _myController = ScrollController();
   late Echo echo_message;
+  final Record _recorder = Record();
+  bool isRecording = false;
+  String? _recordedFilePath;
+  int _recordDuration = 0;
+  Timer? _timer;
+
   int lastMsgNmb = 0;
 
   connectToSocket() async {
@@ -145,7 +154,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         children: [
           const CircularProgressIndicator(
             valueColor:
-                AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
+            AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
           ),
           const SizedBox(
             height: 16,
@@ -195,7 +204,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                   UserProfileData targetUserProfile = UserProfileData();
 
                   SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
+                  await SharedPreferences.getInstance();
                   String accessToken = prefs.getString("token") ?? "";
 
                   var response = await NetworkService().GetUserInfoByID(
@@ -244,43 +253,43 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 ),
                 (widget.chatData.isOnline == false)
                     ? ((widget.chatData.lastTimeOnline != null)
-                        ? Container(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              LocaleKeys.chat_main_lastTimeOnline_prefix.tr() +
-                                  getTimeValue(widget.chatData.lastTimeOnline
-                                      .toString()) +
-                                  LocaleKeys.chat_main_lastTimeOnline_postfix
-                                      .tr(),
-                              style: GoogleFonts.rubik(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: const Color.fromARGB(255, 157, 157, 157),
-                              ),
-                            ),
-                          )
-                        : Container(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              LocaleKeys.common_offline.tr(),
-                              style: GoogleFonts.rubik(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: const Color.fromARGB(255, 157, 157, 157),
-                              ),
-                            ),
-                          ))
+                    ? Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    LocaleKeys.chat_main_lastTimeOnline_prefix.tr() +
+                        getTimeValue(widget.chatData.lastTimeOnline
+                            .toString()) +
+                        LocaleKeys.chat_main_lastTimeOnline_postfix
+                            .tr(),
+                    style: GoogleFonts.rubik(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      color: const Color.fromARGB(255, 157, 157, 157),
+                    ),
+                  ),
+                )
                     : Container(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          LocaleKeys.common_online.tr(),
-                          style: GoogleFonts.rubik(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                            color: const Color.fromARGB(255, 157, 157, 157),
-                          ),
-                        ),
-                      ),
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    LocaleKeys.common_offline.tr(),
+                    style: GoogleFonts.rubik(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      color: const Color.fromARGB(255, 157, 157, 157),
+                    ),
+                  ),
+                ))
+                    : Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    LocaleKeys.common_online.tr(),
+                    style: GoogleFonts.rubik(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      color: const Color.fromARGB(255, 157, 157, 157),
+                    ),
+                  ),
+                ),
               ],
             )
           ],
@@ -305,111 +314,216 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           ),
           Expanded(
               child: Text(
-            LocaleKeys.chat_blocked.tr(),
-          ))
+                LocaleKeys.chat_blocked.tr(),
+              ))
         ],
       ),
     );
   }
+// Variable to track if recording is ongoing
 
   Widget inputBox() {
     return Row(
       children: [
-
+        // Attach File Button
         Expanded(
           flex: 1,
           child: Container(
+            height: 54,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                width: 1.0,
+                color: const Color.fromARGB(255, 218, 216, 215),
+              ),
+            ),
+            child:isRecording?
+            IconButton(
+              splashRadius: 1,
+              padding: const EdgeInsets.all(0),
+              icon: const Icon(
+                Icons.cancel,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                _cancelRecording();
+              },
+            ): IconButton(
+              splashRadius: 1,
+              padding: const EdgeInsets.all(0),
+              icon: const Icon(
+                Icons.attach_file_outlined,
+                color: Color.fromARGB(255, 150, 150, 150),
+              ),
+              onPressed: () {
+                filePicker();
+              },
+            ),
+          ),
+        ),
+        const SizedBox(width: 5),
+
+        // Conditionally Render Text Field or Recording Timer
+        Expanded(
+          flex: 6,
+          child: isRecording
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.fiber_manual_record, color: Colors.red, size: 12),
+              const SizedBox(width: 5),
+              Text(
+                _formatDuration(_recordDuration),
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+            ],
+          )
+              : TextField(
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  widget.bloc.add(SendTextMessage(text: messageController.text));
+                  messageController.text = "";
+                },
+                child: const Icon(Icons.send, color: Color.fromARGB(255, 150, 150, 150)),
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color.fromARGB(255, 218, 216, 215),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color.fromARGB(255, 0, 207, 145),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+            ),
+            keyboardType: TextInputType.multiline,
+            maxLines: 5,
+            minLines: 1,
+            controller: messageController,
+          ),
+        ),
+        const SizedBox(width: 5),
+
+        // Mic Button or Send Button
+        Expanded(
+          flex: 1,
+          child: GestureDetector(
+            onTap: () {
+              if (isRecording) {
+                _sendRecordingToAPI(widget.bloc);
+              } else {
+                _startRecording();
+              }
+            },
+            child: Container(
               height: 54,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   width: 1.0,
                   color: const Color.fromARGB(255, 218, 216, 215),
                 ),
-                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              ),
-              child: IconButton(
-                splashRadius: 1,
-                padding: const EdgeInsets.all(0),
-                icon: const Icon(
-                  Icons.attach_file_outlined,
-                  color: Color.fromARGB(255, 150, 150, 150),
-                ),
-                onPressed: () {
-                  filePicker();
-                },
-              )),
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-
-        Expanded(
-            flex: 7,
-            child: TextField(
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    widget.bloc
-                        .add(SendTextMessage(text: messageController.text));
-                    messageController.text = "";
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    child: const Icon(Icons.send),
-                  ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 218, 216, 215),
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 0, 207, 145),
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                gradient: isRecording
+                    ? null
+                    : const LinearGradient(
+                  colors: [Color(0xFFFA8BFF), Color(0xFF2BD2FF), Color(0xFF2BFF88)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
-              keyboardType: TextInputType.multiline,
-              maxLines: 5,
-              minLines: 1,
-              controller: messageController,
-            )),
-        const SizedBox(
-          width: 5,
-        ),
-
-        Expanded(
-          flex: 1,
-          child: Container(
-              height: 54,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1.0,
-                  color: const Color.fromARGB(255, 218, 216, 215),
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+              child: Center(
+                child: isRecording
+                    ? const Icon(Icons.send, color: Colors.green) // Send icon during recording
+                    : const Icon(Icons.mic, color: Colors.white), // Mic icon by default
               ),
-              child: IconButton(
-                splashRadius: 1,
-                padding: const EdgeInsets.all(0),
-                icon: const Icon(
-                  Icons.mic,
-                  color: Color.fromARGB(255, 150, 150, 150),
-                ),
-                onPressed: () {
-                },
-              )),
+            ),
+          ),
         ),
-
       ],
     );
   }
+
+  Future<void> _startRecording() async {
+    if (await _recorder.hasPermission()) {
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/voice_message_${DateTime.now().millisecondsSinceEpoch}.mp3';
+
+      await _recorder.start(
+        path: filePath,
+        encoder: AudioEncoder.aacLc,
+        bitRate: 128000,
+        samplingRate: 44100,
+      );
+
+      setState(() {
+        isRecording = true;
+        _recordedFilePath = filePath;
+      });
+
+      _startTimer();
+    }
+  }
+
+  Future<void> _cancelRecording() async {
+    if (isRecording) {
+      var s = await _recorder.stop();
+
+      // Get the application documents directory
+      final directory = await getExternalStorageDirectory();
+
+      if (directory != null) {
+        final file = File(s!);
+
+        if (await file.exists()) {
+          await file.delete();
+        }
+      }
+
+      setState(() {
+        isRecording = false;
+        _timer?.cancel();
+        _recordedFilePath = null; // Clear the recorded file path
+      });
+    }
+  }
+  Future<void> _sendRecordingToAPI(ChatWithUserBloc bloc) async {
+    if (isRecording) {
+      var s = await _recorder.stop();
+      setState(() {
+        isRecording = false;
+        _timer?.cancel();
+        // Here, you can handle the recorded file, such as sending it
+      });
+      var file = File(s!);
+      bloc.add(SendFile(file: file, fileType: "audio"));
+
+    }
+  }
+
+  void _startTimer() {
+    _recordDuration = 0;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _recordDuration++;
+      });
+    });
+  }
+
+  String _formatDuration(int seconds) {
+    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$remainingSeconds';
+  }
+
+
 
   Widget body(BuildContext context, ChatWithUserState state) {
     state as ChatWithUserInitial;
@@ -486,7 +600,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     );
 
     Timer(const Duration(),
-        () => _myController.jumpTo(_myController.position.minScrollExtent));
+            () => _myController.jumpTo(_myController.position.minScrollExtent));
 
     return list;
   }
@@ -687,9 +801,9 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                     topRight: const Radius.circular(10),
                     topLeft: const Radius.circular(10),
                     bottomLeft:
-                        Radius.circular((message.isAuthUsermessage!) ? 10 : 0),
+                    Radius.circular((message.isAuthUsermessage!) ? 10 : 0),
                     bottomRight:
-                        Radius.circular((message.isAuthUsermessage!) ? 0 : 10)),
+                    Radius.circular((message.isAuthUsermessage!) ? 0 : 10)),
               ),
               child: Column(
                 crossAxisAlignment: (message.isAuthUsermessage!)
@@ -709,7 +823,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                               intl.DateFormat('DD.MM.yyyy HH:mm:ss')
                                   .parse(message.messageTime!)
                                   .add(DateTime.now().timeZoneOffset -
-                                      const Duration(hours: 3))),
+                                  const Duration(hours: 3))),
                           style: GoogleFonts.rubik(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
@@ -861,14 +975,15 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 initPage: 0,
                 items: <String>[message.message!.toString()],
                 photoOwnerId: (widget.bloc.state as ChatWithUserInitial)
-                        .chatData
-                        ?.userID ??
+                    .chatData
+                    ?.userID ??
                     0)),
       );
     }
     if (message.messageType == "file") {
+      print("Auddiddasda:"+message.toString());
       String idStr =
-          message.message!.substring(message.message!.lastIndexOf('/') + 1);
+      message.message!.substring(message.message!.lastIndexOf('/') + 1);
       //debugPrint(idStr);
       if (idStr.contains(".mp4") ||
           idStr.contains(".avi") ||
@@ -922,8 +1037,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                       initPage: 0,
                       items: <String>[message.message!.toString()],
                       photoOwnerId: (widget.bloc.state as ChatWithUserInitial)
-                              .chatData
-                              ?.userID ??
+                          .chatData
+                          ?.userID ??
                           0)),
             ),
             Row(
@@ -949,12 +1064,12 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
       }
       return GestureDetector(
           onTap: () => setState(() {
-                try {
-                  _launchInBrowser(message.message!);
-                } catch (err) {
-                  //print(err.toString());
-                }
-              }),
+            try {
+              _launchInBrowser(message.message!);
+            } catch (err) {
+              //print(err.toString());
+            }
+          }),
           child: Row(
             children: [
               const Icon(
@@ -1087,7 +1202,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           itemBuilder: (itemContext) {
             List<PopupMenuEntry> items = [];
             if ((state.chatData!.isChatBlocked &&
-                    state.chatData!.isAuthUserBlockChat) ||
+                state.chatData!.isAuthUserBlockChat) ||
                 state.chatData!.isChatBlocked == false) {
               items.add(
                 PopupMenuItem(
@@ -1102,12 +1217,12 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                       ),
                       Expanded(
                           child: Container(
-                        child: ((widget.bloc.state as ChatWithUserInitial)
+                            child: ((widget.bloc.state as ChatWithUserInitial)
                                 .chatData!
                                 .isChatBlocked)
-                            ? Text(LocaleKeys.chat_unblock.tr())
-                            : Text(LocaleKeys.chat_block.tr()),
-                      ))
+                                ? Text(LocaleKeys.chat_unblock.tr())
+                                : Text(LocaleKeys.chat_block.tr()),
+                          ))
                     ],
                   ),
                 ),
@@ -1136,13 +1251,13 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 onTap: () async {
                   Future.delayed(
                       const Duration(seconds: 0),
-                      () => SendClaim(
-                              claimObjectId:
-                                  (widget.bloc.state as ChatWithUserInitial)
-                                          .chatData
-                                          ?.userID ??
-                                      0,
-                              type: ClaimType.photo)
+                          () => SendClaim(
+                          claimObjectId:
+                          (widget.bloc.state as ChatWithUserInitial)
+                              .chatData
+                              ?.userID ??
+                              0,
+                          type: ClaimType.photo)
                           .ShowAlertDialog(context));
                 },
                 child: Row(
@@ -1196,4 +1311,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
     return result;
   }
+
+
+
 }

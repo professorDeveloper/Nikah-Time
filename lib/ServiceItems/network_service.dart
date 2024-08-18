@@ -39,7 +39,7 @@ class NetworkService {
     _dio.options.headers["accept"] = "application/json";
   }
 
-  final String baseUrl = "https://www.nikahtime.ru/api";
+  final String baseUrl = "https://dev.nikahtime.ru/api";
 //LOGIN
   final String login = "/login";
 //REGISTRATION
@@ -385,7 +385,7 @@ class NetworkService {
       "Content-Type": "multipart/form-data"
     };
     var request = http.MultipartRequest(
-        "POST", Uri.parse("${NetworkService().baseUrl}/store/file"));
+        "POST", Uri.parse("${NetworkService().baseUrl}/storei/fle"));
     request.files.add(await http.MultipartFile.fromPath('file', imagePath));
     request.fields['file'] = imagePath;
     request.fields['fileType'] = fileType;

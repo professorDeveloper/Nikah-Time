@@ -273,43 +273,60 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
       await getAccessToken();
     }
 
+    // Prepare messages list
     List<ChatMessage> messages =
-        (state as ChatWithUserInitial).messages.reversed.toList();
+    (state as ChatWithUserInitial).messages.reversed.toList();
     messages.add(createMsg(str: event.file.path, type: event.fileType));
 
+    // Emit loading state
     emit((state as ChatWithUserInitial).copyThis(
         pageState: PageState.loading, messages: messages.reversed.toList()));
 
-    var response = await NetworkService()
-        .UploadFileRequest(accessToken!, event.file.path, event.fileType);
-
-    String url = "";
     try {
-      await response.stream.transform(utf8.decoder).listen((value) async {
-        Map valueMap = json.decode(value.toString());
-        url = valueMap["fileURL"];
-      });
+      // Send file upload request
+      var response = await NetworkService()
+          .UploadFileRequest(accessToken!, event.file.path, event.fileType);
+
+      // Check response status code
+      if (response.statusCode != 200) {
+        throw Exception('Failed to upload file: ${response.statusCode}');
+      }
+
+      // Collect the entire response body as a string
+      final responseBody = await response.stream.bytesToString();
+
+      // Debug print for response body
+      print('Response body: $responseBody');
+
+      // Decode the response body
+      final valueMap = json.decode(responseBody);
+
+      // Extract the file URL
+      final url = valueMap["fileURL"];
+      // Send message with the file URL
+      await NetworkService().ChatsSendMessage(
+          accessToken!, url.toString(),
+          (state as ChatWithUserInitial).chatData!.chatId!, event.fileType);
+
+      // Optional: Update messages list to reflect sent status
+      messages.removeLast();
+      messages.add(createMsg(str: url.toString(), type: event.fileType, isMessageSend: true));
+
+      // Emit ready state with updated messages
+      emit((state as ChatWithUserInitial).copyThis(
+          pageState: PageState.ready,
+          messages: messages.reversed.toList()));
+
+      print("File URL: $url");
+
     } catch (error) {
+      // Print and handle errors
+      print('Error during file upload or JSON decoding: $error');
+
+      // Emit error state
       emit((state as ChatWithUserInitial).copyThis(
         pageState: PageState.error,
       ));
-      return;
     }
-//
-    await NetworkService().ChatsSendMessage(accessToken!, url.toString(),
-        (state as ChatWithUserInitial).chatData!.chatId!, event.fileType);
-    //messages.removeLast();
-    //messages.add(
-    //  createMsg(
-    //    str: url.toString(),
-    //    type: event.fileType,
-    //    isMessageSend: true
-    //  )
-    //);
-//
-    //emit((state as ChatWithUserInitial).copyThis(
-    //    pageState: PageState.ready,
-    //    messages: messages.reversed.toList()
-    //));
   }
 }
