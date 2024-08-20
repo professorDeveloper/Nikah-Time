@@ -2,39 +2,32 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-import 'dart:ui';
+
 import 'package:custom_pop_up_menu_fork/custom_pop_up_menu.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart' as intl;
-import 'package:menu_bar/menu_bar.dart';
-import 'package:path/path.dart' as p;
-
+import 'package:easy_localization/easy_localization.dart' as localized;
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:laravel_echo2/laravel_echo2.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/Screens/Chat/bloc/chat_with_user/chat_with_user_bloc.dart';
-import 'package:untitled/components/widgets/image_viewer.dart';
-import 'package:untitled/components/widgets/send_claim.dart';
-
-import 'package:laravel_echo2/laravel_echo2.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
+import 'package:untitled/Screens/Chat/widgets/chat_audio.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:easy_localization/easy_localization.dart' as localized;
+import 'package:untitled/components/widgets/image_viewer.dart';
+import 'package:untitled/components/widgets/send_claim.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
-
-import '../../components/network_service/dio_override/dio_service_additions.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatWithUserScreen extends StatefulWidget {
   ChatWithUserScreen(this.chatData, this.userProfileGender, this.userProfileId,
@@ -154,7 +147,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         children: [
           const CircularProgressIndicator(
             valueColor:
-            AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
+                AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
           ),
           const SizedBox(
             height: 16,
@@ -204,7 +197,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                   UserProfileData targetUserProfile = UserProfileData();
 
                   SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
+                      await SharedPreferences.getInstance();
                   String accessToken = prefs.getString("token") ?? "";
 
                   var response = await NetworkService().GetUserInfoByID(
@@ -253,43 +246,43 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 ),
                 (widget.chatData.isOnline == false)
                     ? ((widget.chatData.lastTimeOnline != null)
-                    ? Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    LocaleKeys.chat_main_lastTimeOnline_prefix.tr() +
-                        getTimeValue(widget.chatData.lastTimeOnline
-                            .toString()) +
-                        LocaleKeys.chat_main_lastTimeOnline_postfix
-                            .tr(),
-                    style: GoogleFonts.rubik(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: const Color.fromARGB(255, 157, 157, 157),
-                    ),
-                  ),
-                )
+                        ? Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              LocaleKeys.chat_main_lastTimeOnline_prefix.tr() +
+                                  getTimeValue(widget.chatData.lastTimeOnline
+                                      .toString()) +
+                                  LocaleKeys.chat_main_lastTimeOnline_postfix
+                                      .tr(),
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                color: const Color.fromARGB(255, 157, 157, 157),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              LocaleKeys.common_offline.tr(),
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                color: const Color.fromARGB(255, 157, 157, 157),
+                              ),
+                            ),
+                          ))
                     : Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    LocaleKeys.common_offline.tr(),
-                    style: GoogleFonts.rubik(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: const Color.fromARGB(255, 157, 157, 157),
-                    ),
-                  ),
-                ))
-                    : Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    LocaleKeys.common_online.tr(),
-                    style: GoogleFonts.rubik(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: const Color.fromARGB(255, 157, 157, 157),
-                    ),
-                  ),
-                ),
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          LocaleKeys.common_online.tr(),
+                          style: GoogleFonts.rubik(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                            color: const Color.fromARGB(255, 157, 157, 157),
+                          ),
+                        ),
+                      ),
               ],
             )
           ],
@@ -314,12 +307,13 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           ),
           Expanded(
               child: Text(
-                LocaleKeys.chat_blocked.tr(),
-              ))
+            LocaleKeys.chat_blocked.tr(),
+          ))
         ],
       ),
     );
   }
+
 // Variable to track if recording is ongoing
 
   Widget inputBox() {
@@ -337,28 +331,29 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 color: const Color.fromARGB(255, 218, 216, 215),
               ),
             ),
-            child:isRecording?
-            IconButton(
-              splashRadius: 1,
-              padding: const EdgeInsets.all(0),
-              icon: const Icon(
-                Icons.cancel,
-                color: Colors.red,
-              ),
-              onPressed: () {
-                _cancelRecording();
-              },
-            ): IconButton(
-              splashRadius: 1,
-              padding: const EdgeInsets.all(0),
-              icon: const Icon(
-                Icons.attach_file_outlined,
-                color: Color.fromARGB(255, 150, 150, 150),
-              ),
-              onPressed: () {
-                filePicker();
-              },
-            ),
+            child: isRecording
+                ? IconButton(
+                    splashRadius: 1,
+                    padding: const EdgeInsets.all(0),
+                    icon: const Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      _cancelRecording();
+                    },
+                  )
+                : IconButton(
+                    splashRadius: 1,
+                    padding: const EdgeInsets.all(0),
+                    icon: const Icon(
+                      Icons.attach_file_outlined,
+                      color: Color.fromARGB(255, 150, 150, 150),
+                    ),
+                    onPressed: () {
+                      filePicker();
+                    },
+                  ),
           ),
         ),
         const SizedBox(width: 5),
@@ -368,47 +363,51 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           flex: 6,
           child: isRecording
               ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.fiber_manual_record, color: Colors.red, size: 12),
-              const SizedBox(width: 5),
-              Text(
-                _formatDuration(_recordDuration),
-                style: const TextStyle(color: Colors.red, fontSize: 12),
-              ),
-            ],
-          )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.fiber_manual_record,
+                        color: Colors.red, size: 12),
+                    const SizedBox(width: 5),
+                    Text(
+                      _formatDuration(_recordDuration),
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ],
+                )
               : TextField(
-            textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(
-              suffixIcon: GestureDetector(
-                onTap: () {
-                  widget.bloc.add(SendTextMessage(text: messageController.text));
-                  messageController.text = "";
-                },
-                child: const Icon(Icons.send, color: Color.fromARGB(255, 150, 150, 150)),
-              ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromARGB(255, 218, 216, 215),
-                  width: 1,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        widget.bloc
+                            .add(SendTextMessage(text: messageController.text));
+                        messageController.text = "";
+                      },
+                      child: const Icon(Icons.send,
+                          color: Color.fromARGB(255, 150, 150, 150)),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 218, 216, 215),
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 0, 207, 145),
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  minLines: 1,
+                  controller: messageController,
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromARGB(255, 0, 207, 145),
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-            ),
-            keyboardType: TextInputType.multiline,
-            maxLines: 5,
-            minLines: 1,
-            controller: messageController,
-          ),
         ),
         const SizedBox(width: 5),
 
@@ -434,15 +433,21 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 gradient: isRecording
                     ? null
                     : const LinearGradient(
-                  colors: [Color(0xFFFA8BFF), Color(0xFF2BD2FF), Color(0xFF2BFF88)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                        colors: [
+                          Color(0xFFFA8BFF),
+                          Color(0xFF2BD2FF),
+                          Color(0xFF2BFF88)
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
               ),
               child: Center(
                 child: isRecording
-                    ? const Icon(Icons.send, color: Colors.green) // Send icon during recording
-                    : const Icon(Icons.mic, color: Colors.white), // Mic icon by default
+                    ? const Icon(Icons.send,
+                        color: Colors.green) // Send icon during recording
+                    : const Icon(Icons.mic,
+                        color: Colors.white), // Mic icon by default
               ),
             ),
           ),
@@ -454,7 +459,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
   Future<void> _startRecording() async {
     if (await _recorder.hasPermission()) {
       final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/voice_message_${DateTime.now().millisecondsSinceEpoch}.mp3';
+      final filePath =
+          '${directory.path}/voice_message_${DateTime.now().millisecondsSinceEpoch}.mp3';
 
       await _recorder.start(
         path: filePath,
@@ -494,6 +500,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
       });
     }
   }
+
   Future<void> _sendRecordingToAPI(ChatWithUserBloc bloc) async {
     if (isRecording) {
       var s = await _recorder.stop();
@@ -503,8 +510,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         // Here, you can handle the recorded file, such as sending it
       });
       var file = File(s!);
+      print('FILEEEEE :${s}');
       bloc.add(SendFile(file: file, fileType: "audio"));
-
     }
   }
 
@@ -522,8 +529,6 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
     return '$minutes:$remainingSeconds';
   }
-
-
 
   Widget body(BuildContext context, ChatWithUserState state) {
     state as ChatWithUserInitial;
@@ -600,7 +605,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     );
 
     Timer(const Duration(),
-            () => _myController.jumpTo(_myController.position.minScrollExtent));
+        () => _myController.jumpTo(_myController.position.minScrollExtent));
 
     return list;
   }
@@ -801,9 +806,9 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                     topRight: const Radius.circular(10),
                     topLeft: const Radius.circular(10),
                     bottomLeft:
-                    Radius.circular((message.isAuthUsermessage!) ? 10 : 0),
+                        Radius.circular((message.isAuthUsermessage!) ? 10 : 0),
                     bottomRight:
-                    Radius.circular((message.isAuthUsermessage!) ? 0 : 10)),
+                        Radius.circular((message.isAuthUsermessage!) ? 0 : 10)),
               ),
               child: Column(
                 crossAxisAlignment: (message.isAuthUsermessage!)
@@ -823,7 +828,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                               intl.DateFormat('DD.MM.yyyy HH:mm:ss')
                                   .parse(message.messageTime!)
                                   .add(DateTime.now().timeZoneOffset -
-                                  const Duration(hours: 3))),
+                                      const Duration(hours: 3))),
                           style: GoogleFonts.rubik(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
@@ -975,56 +980,19 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 initPage: 0,
                 items: <String>[message.message!.toString()],
                 photoOwnerId: (widget.bloc.state as ChatWithUserInitial)
-                    .chatData
-                    ?.userID ??
+                        .chatData
+                        ?.userID ??
                     0)),
       );
     }
     if (message.messageType == "file") {
-      print("Auddiddasda:"+message.toString());
       String idStr =
-      message.message!.substring(message.message!.lastIndexOf('/') + 1);
+          message.message!.substring(message.message!.lastIndexOf('/') + 1);
+      print("IG AUDIOO OO:" + idStr);
       //debugPrint(idStr);
       if (idStr.contains(".mp4") ||
           idStr.contains(".avi") ||
           idStr.contains(".mov")) {
-        /*return GestureDetector(
-            onTap: () {
-              try{
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VideoPlayerScreen(
-                      message.message!,
-                      photoOwnerId: (widget.bloc.state as ChatWithUserInitial).chatData?.userID ?? 0
-                    ),
-                  )
-                );
-              }catch(e){
-                debugPrint(e.toString());
-              }
-
-            },
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.videocam,
-                  color: Colors.grey,
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Text(
-                    LocaleKeys.chat_video.tr() +
-                        "${p.extension(message.message!)}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 18,
-                      color: Colors.blue.shade500,
-                      //decoration: TextDecoration.underline,
-                    )),
-              ],
-            ));*/
         return Column(
           children: [
             SizedBox(
@@ -1037,8 +1005,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                       initPage: 0,
                       items: <String>[message.message!.toString()],
                       photoOwnerId: (widget.bloc.state as ChatWithUserInitial)
-                          .chatData
-                          ?.userID ??
+                              .chatData
+                              ?.userID ??
                           0)),
             ),
             Row(
@@ -1062,14 +1030,15 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           ],
         );
       }
+
       return GestureDetector(
           onTap: () => setState(() {
-            try {
-              _launchInBrowser(message.message!);
-            } catch (err) {
-              //print(err.toString());
-            }
-          }),
+                try {
+                  _launchInBrowser(message.message!);
+                } catch (err) {
+                  //print(err.toString());
+                }
+              }),
           child: Row(
             children: [
               const Icon(
@@ -1088,6 +1057,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                   )),
             ],
           ));
+    }
+    if (message.messageType == "audio") {
+      String idStr = message.message!;
+      return AudioMessage( audioUrl: idStr,);
     }
 
     return const Text("Ошибка загрузки сообщения");
@@ -1202,7 +1175,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           itemBuilder: (itemContext) {
             List<PopupMenuEntry> items = [];
             if ((state.chatData!.isChatBlocked &&
-                state.chatData!.isAuthUserBlockChat) ||
+                    state.chatData!.isAuthUserBlockChat) ||
                 state.chatData!.isChatBlocked == false) {
               items.add(
                 PopupMenuItem(
@@ -1217,12 +1190,12 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                       ),
                       Expanded(
                           child: Container(
-                            child: ((widget.bloc.state as ChatWithUserInitial)
+                        child: ((widget.bloc.state as ChatWithUserInitial)
                                 .chatData!
                                 .isChatBlocked)
-                                ? Text(LocaleKeys.chat_unblock.tr())
-                                : Text(LocaleKeys.chat_block.tr()),
-                          ))
+                            ? Text(LocaleKeys.chat_unblock.tr())
+                            : Text(LocaleKeys.chat_block.tr()),
+                      ))
                     ],
                   ),
                 ),
@@ -1251,13 +1224,13 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 onTap: () async {
                   Future.delayed(
                       const Duration(seconds: 0),
-                          () => SendClaim(
-                          claimObjectId:
-                          (widget.bloc.state as ChatWithUserInitial)
-                              .chatData
-                              ?.userID ??
-                              0,
-                          type: ClaimType.photo)
+                      () => SendClaim(
+                              claimObjectId:
+                                  (widget.bloc.state as ChatWithUserInitial)
+                                          .chatData
+                                          ?.userID ??
+                                      0,
+                              type: ClaimType.photo)
                           .ShowAlertDialog(context));
                 },
                 child: Row(
@@ -1311,7 +1284,4 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
     return result;
   }
-
-
-
 }

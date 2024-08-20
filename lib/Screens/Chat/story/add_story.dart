@@ -1,13 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:photofilters/photofilters.dart';
-import 'package:image/image.dart' as imageLib;
-import 'package:path/path.dart';
 
 class AddStoryPage extends StatefulWidget {
-  final File imageFile;
+  File imageFile;
 
   AddStoryPage({required this.imageFile});
 
@@ -16,256 +13,234 @@ class AddStoryPage extends StatefulWidget {
 }
 
 class _AddStoryPageState extends State<AddStoryPage> {
-  late File _editedImage;
-  TextEditingController _textEditingController = TextEditingController();
-  bool _showEmojiPicker = false;
-  List<Filter> filters = presetFiltersList;
+  TextEditingController _textController = TextEditingController();
+  List<Widget> _stickers = [];
+  List<Map<String, dynamic>> _texts = [];
+  Color _selectedColor = Colors.white;
+  double _fontSize = 24;
+  double _currentSliderValue = 24;
 
-  @override
-  void initState() {
-    super.initState();
-    _editedImage = widget.imageFile;
+  Future<void> _cropImage() async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: widget.imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+    );
+
+    if (croppedFile != null) {
+      setState(() {
+        widget.imageFile = File(croppedFile.path); // Convert CroppedFile to File
+      });
+    }
+  }
+
+  void _addText() {
+    _textController.clear();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          contentPadding: EdgeInsets.symmetric(horizontal: 20),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _textController,
+                style: TextStyle(color: _selectedColor, fontSize: _fontSize),
+                decoration: InputDecoration(
+                  hintText: 'Enter text',
+                  hintStyle: TextStyle(color: Colors.white54),
+                  border: InputBorder.none,
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => {},
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      color: _selectedColor,
+                    ),
+                  ),
+                  Slider(
+                    value: _currentSliderValue,
+                    min: 12,
+                    max: 72,
+                    activeColor: Colors.white,
+                    onChanged: (double value) {
+                      setState(() {
+                        _currentSliderValue = value;
+                        _fontSize = value;
+                      });
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _texts.add({
+                          'text': _textController.text,
+                          'color': _selectedColor,
+                          'size': _fontSize,
+                          'top': 200.0,
+                          'left': 100.0,
+                          'rotation': 0.0,
+                        });
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text('Add'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+  void _addSticker() {
+    setState(() {
+      _stickers.add(
+        Positioned(
+          top: 150,
+          left: 150,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              setState(() {
+                _stickers[_stickers.length - 1] = Positioned(
+                  top: details.localPosition.dy,
+                  left: details.localPosition.dx,
+                  child: _stickers[_stickers.length - 1],
+                );
+              });
+            },
+            child: Image.asset(
+              'assets/sticker.png', // Replace with your sticker asset
+              width: 100,
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  void _onTextDrag(int index, DragUpdateDetails details) {
+    setState(() {
+      _texts[index]['top'] += details.delta.dy;
+      _texts[index]['left'] += details.delta.dx;
+    });
+  }
+
+  void _onTextRotate(int index, double angle) {
+    setState(() {
+      _texts[index]['rotation'] += angle;
+    });
+  }
+
+  void _onTextScale(int index, double scale) {
+    setState(() {
+      _texts[index]['size'] *= scale;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Stack(
+      backgroundColor: Colors.grey[900],
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text('Story', style: TextStyle(color: Colors.blue)),
+      ),
+      body: Stack(
+        children: [
+          Image.file(
+            widget.imageFile,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          ..._stickers, // Display all stickers
+          ..._texts.map((textMap) {
+            int index = _texts.indexOf(textMap);
+            return Positioned(
+              top: textMap['top'],
+              left: textMap['left'],
+              child: GestureDetector(
+                onPanUpdate: (details) => _onTextDrag(index, details),
+                onLongPress: () {
+                  // Allow scaling and rotation if needed
+                },
+                child: Transform.rotate(
+                  angle: textMap['rotation'],
+                  child: Text(
+                    textMap['text'],
+                    style: TextStyle(
+                      color: textMap['color'],
+                      fontSize: textMap['size'],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Display the edited image
-            Image.file(
-              _editedImage,
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-            ),
-
-            // Overlay text on the image
-            if (_textEditingController.text.isNotEmpty)
-              Positioned(
-                left: 20,
-                top: 20,
-                child: Text(
-                  _textEditingController.text,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-            // Bottom bar with actions
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                color: Colors.black.withOpacity(0.5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Back button
-                    GradientStrokeButton(
-                      icon: Icons.arrow_back,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    // Action icons
-                    IconButton(
-                      icon: Icon(Icons.crop, color: Colors.white),
-                      onPressed: () => _cropImage(context),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.auto_awesome, color: Colors.white),
-                      onPressed: () => _applyFilter(context),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.text_fields, color: Colors.white),
-                      onPressed: () => _addText(context),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.emoji_emotions, color: Colors.white),
-                      onPressed: () {
-                        setState(() {
-                          _showEmojiPicker = !_showEmojiPicker;
-                        });
-                      },
-                    ),
-                    // Next button
-                    NextButton(
-                      text: 'Далее',
-                      onPressed: () {
-                        // Add your post story logic here
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Emoji picker
-            if (_showEmojiPicker)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: EmojiPicker(
-                  onEmojiSelected: (category, emoji) {
-                    _textEditingController.text += emoji.emoji;
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.green),
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
-                  config: Config(
-                    columns: 7,
-                    emojiSizeMax: 32,
-                    bgColor: Colors.black,
-                    indicatorColor: Colors.white,
-                    iconColorSelected: Colors.white,
-                  ),
+                ),
+                SizedBox(width: 8),
+                IconButton(
+                  icon: Icon(Icons.crop, color: Colors.white),
+                  onPressed: _cropImage,
+                ),
+                SizedBox(width: 8),
+                IconButton(
+                  icon: Icon(Icons.text_fields, color: Colors.white),
+                  onPressed: _addText,
+                ),
+                SizedBox(width: 8),
+                IconButton(
+                  icon: Icon(Icons.sticky_note_2, color: Colors.white),
+                  onPressed: _addSticker,
+                ),
+              ],
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _cropImage(BuildContext context) async {
-    CroppedFile? cropped = await ImageCropper().cropImage(
-      sourcePath: _editedImage.path,
-      cropStyle: CropStyle.rectangle,
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
-          toolbarColor: Colors.black,
-          toolbarWidgetColor: Colors.white,
-          activeControlsWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: false,
-        ),
-        IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ),
-      ],
-    );
-
-    if (cropped != null) {
-      setState(() {
-        _editedImage = File(cropped.path);
-      });
-    }
-  }
-
-  Future<void> _applyFilter(BuildContext context) async {
-    var image = imageLib.decodeImage(_editedImage.readAsBytesSync());
-    image = imageLib.copyResize(image!, width: 600);
-
-    Map imageFile = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PhotoFilterSelector(
-          title: Text("Apply Filter"),
-          image: image!,
-          filters: filters,
-          filename: basename(_editedImage.path),
-          loader: Center(child: CircularProgressIndicator()),
-          fit: BoxFit.contain,
-        ),
-      ),
-    );
-    if (imageFile.containsKey('image_filtered')) {
-      setState(() {
-        _editedImage = imageFile['image_filtered'];
-      });
-    }
-  }
-
-  void _addText(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.black,
-          title: Text("Add Text", style: TextStyle(color: Colors.white)),
-          content: TextField(
-            controller: _textEditingController,
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: "Enter your text",
-              hintStyle: TextStyle(color: Colors.white54),
-            ),
-          ),
-          actions: [
-            TextButton(
               onPressed: () {
-                setState(() {});
-                Navigator.pop(context);
+                // Next action
               },
-              child: Text("OK", style: TextStyle(color: Colors.white)),
+              child: Text('Далее', style: TextStyle(fontSize: 16)),
             ),
           ],
-        );
-      },
-    );
-  }
-}
-
-// Custom widget to create a gradient stroke button with border color
-class GradientStrokeButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  GradientStrokeButton({required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          width: 2,
-          color: Colors.white,
-        ),
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.white),
-        onPressed: onPressed,
-        padding: EdgeInsets.all(0),
-      ),
-    );
-  }
-}
-
-// Custom widget for the "Next" button
-class NextButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  NextButton({required this.text, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xff1EC760),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          primary: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(
-            text,
-            style: TextStyle(fontSize: 18, color: Colors.white),
-          ),
         ),
       ),
     );

@@ -36,6 +36,11 @@ dependencies:
   customizable_multiselect_field:
     path: ./packages/customizable_multiselect_field
   intl: ^0.18.0
+  record: ^4.3.0
+  just_audio: ^0.9.28
+  voice_message_player: ^1.1.0
+  audioplayers: ^1.0.1
+  flutter_sound: ^9.1.8 # for audio playback
   socket_io_client: ^1.0.1
   laravel_echo2: ^0.0.1
   url_launcher: ^6.0.12
@@ -59,9 +64,9 @@ dependencies:
   flutter_staggered_grid_view: ^0.6.1
   animations: ^2.0.0
   transparent_image: ^2.0.0
-#  new_version: ^0.3.1
-#  in_app_update: ^4.1.4
-#  package_info_plus: any
+  #  new_version: ^0.3.1
+  #  in_app_update: ^4.1.4
+  #  package_info_plus: any
   like_button: ^2.0.4 # for the like button animations
 
   flutter_bloc: ^8.0.1
