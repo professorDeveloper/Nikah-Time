@@ -131,8 +131,7 @@ class ChatMainPageState extends State<ChatMainPage>
       name: 'User 2',
       avatarUrl: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg',
       stories: [
-        Story(url: 'https://firebasestorage.googleapis.com/v0/b/soplay-bd7c8.appspot.com/o/An8wSdSQD486_4hq0ViruvBmuOK9_3TdelBzU5lG9IC2kcgSJHW08Yt3T0Ee8JT.mp4?alt=media&token=6151aafb-9142-4816-aed3-9e99788d9688', type: StoryType.video),
-        Story(url: 'https://firebasestorage.googleapis.com/v0/b/soplay-bd7c8.appspot.com/o/video_2024-08-02_23-24-36.mp4?alt=media&token=2db6fa2c-7a7d-4441-a8e7-227d12b38ebe', type: StoryType.video),
+        Story(url: 'https://i.pinimg.com/originals/4f/b9/aa/4fb9aab9e97f2f04d3045d9fa7b17482.jpg', type: StoryType.image),
       ],
       userType: UserType.others,
     ),

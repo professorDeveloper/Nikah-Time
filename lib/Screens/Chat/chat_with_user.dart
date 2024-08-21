@@ -434,8 +434,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                     ? null
                     : const LinearGradient(
                         colors: [
-                          Color(0xFFFA8BFF),
-                          Color(0xFF2BD2FF),
+                          Color(0xFF2BFF88),
+                          Color(0xFF2BFF88),
                           Color(0xFF2BFF88)
                         ],
                         begin: Alignment.topLeft,
@@ -507,13 +507,23 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
       setState(() {
         isRecording = false;
         _timer?.cancel();
-        // Here, you can handle the recorded file, such as sending it
       });
+
       var file = File(s!);
-      print('FILEEEEE :${s}');
-      bloc.add(SendFile(file: file, fileType: "audio"));
+      print('FILEEEEE : ${s}');
+
+      // Add a slight delay to ensure state updates
+      await Future.delayed(Duration(milliseconds: 300));
+
+      setState(() {
+        bloc.add(SendFile(file: file, fileType: "audio"));
+      });
+
+      // Optionally, refresh the UI after the file is sent
+      setState(() {});
     }
   }
+
 
   void _startTimer() {
     _recordDuration = 0;
@@ -1060,7 +1070,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     }
     if (message.messageType == "audio") {
       String idStr = message.message!;
-      return AudioMessage( audioUrl: idStr,);
+      return VoiceMessageView(url: idStr,);
     }
 
     return const Text("Ошибка загрузки сообщения");

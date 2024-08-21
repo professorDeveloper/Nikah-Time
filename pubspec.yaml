@@ -38,7 +38,7 @@ dependencies:
   intl: ^0.18.0
   record: ^4.3.0
   just_audio: ^0.9.28
-  voice_message_player: ^1.1.0
+  voice_message_player: ^1.1.2
   audioplayers: ^1.0.1
   flutter_sound: ^9.1.8 # for audio playback
   socket_io_client: ^1.0.1

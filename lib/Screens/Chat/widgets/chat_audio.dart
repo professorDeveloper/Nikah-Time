@@ -1,37 +1,69 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:voice_message_player/voice_message_player.dart';
+import '../manager/audio_manager.dart';
 
-class AudioMessage extends StatelessWidget {
-  final String audioUrl;
+class VoiceMessageView extends StatefulWidget {
+  final String url;
 
-  AudioMessage({required this.audioUrl});
+  VoiceMessageView({required this.url});
+
+  @override
+  _VoiceMessageViewState createState() => _VoiceMessageViewState();
+}
+
+class _VoiceMessageViewState extends State<VoiceMessageView> {
+  late VoiceController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeController();
+  }
+
+  void _initializeController() {
+    _controller = VoiceController(
+      audioSrc: widget.url,
+      maxDuration: const Duration(seconds: 10),
+      isFile: false,
+      onComplete: () {
+        print("Playback completed");
+        audioPlayerManager.stopActiveController();
+      },
+      onPause: () {
+        print("Playback paused");
+      },
+      onPlaying: () {
+        print("Playback started");
+        audioPlayerManager.setActiveController(_controller);
+      },
+      onError: (err) {
+        print("Error occurred: $err");
+      },
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant VoiceMessageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      // If the URL changes, dispose the old controller and create a new one
+      _controller.dispose();
+      _initializeController();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return VoiceMessagePlayer(
-
-      controller: VoiceController(
-
-        audioSrc: "https://cdn.pixabay.com/download/audio/2022/11/16/audio_a2b0a45199.mp3?filename=6-islamic-background-sounds-alfa-relaxing-music-126060.mp3",
-        maxDuration: const Duration(seconds: 10),
-        isFile: false,
-        onComplete: () {
-          // Do something on complete
-          print('Audio playback completed');
-        },
-        onPause: () {
-          // Do something on pause
-          print('Audio playback paused');
-        },
-        onPlaying: () {
-          // Do something on playing
-          print('Audio playback started');
-        },
-        onError: (err) {
-          // Do something on error
-          print('Audio playback error: $err');
-        },
-      ),
+      controller: _controller,
+      innerPadding: 12,
+      cornerRadius: 20,
     );
   }
 }
