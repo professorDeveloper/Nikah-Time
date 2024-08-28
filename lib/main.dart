@@ -119,7 +119,6 @@ void main() async {
   MyTrackerConfig trackerConfig = MyTracker.trackerConfig;
   trackerConfig.setLaunchTimeout(300);
   trackerConfig.setBufferingPeriod(60);
-  trackerConfig.setRegion(MyTrackerRegion.RU);
   trackerConfig.setTrackingLocationEnabled(false);
 
   //MyTracker.setDebugMode(true);
@@ -265,7 +264,11 @@ class AppBody extends StatelessWidget {
                 ? MyTrackerGender.MALE
                 : MyTrackerGender.FEMALE));
 
-        MyTracker.trackLoginEvent(userProfileData!.id!.toString(), {});
+        MyTracker.trackRegistrationEvent(
+            (userProfileData?.id ?? -1).toString(),
+            null, // vkConnectId or a proper value if available
+            {}    // The third argument, typically a Map or an additional parameter
+        );
         //MyTracker.trackRegistrationEvent(widget.userProfileData.id!.toString(),{});
         return MainPage(userProfileData!);
       case AppBodyScreen.registrationCreateProfile:

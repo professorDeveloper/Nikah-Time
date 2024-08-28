@@ -19,7 +19,7 @@ class FeedHorizontalListView extends StatefulWidget {
 }
 
 class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
-  CarouselController buttonCarouselController = CarouselController();
+  CarouselSliderController buttonCarouselController = CarouselSliderController();
   final _scrollController = ScrollController();
   int lastGuestId = -1;
 

@@ -16,14 +16,13 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   intl_phone_number_input: ^0.7.0+2
-  carousel_slider: ^4.0.0
+  carousel_slider: ^5.0.0
   flutter_svg: ^2.0.7
   provider: ^6.0.0
   google_fonts: any
   gallery_saver: 2.3.0
   emoji_picker_flutter: ^1.0.0
   image_cropper: ^2.0.0
-  photofilters: ^3.0.0
   pin_code_fields: ^8.0.1
   dropdown_plus: ^0.0.9
   image_picker: ^1.0.0
@@ -35,7 +34,7 @@ dependencies:
   font_awesome_flutter: ^10.5.0
   customizable_multiselect_field:
     path: ./packages/customizable_multiselect_field
-  intl: ^0.18.0
+  intl: ^0.19.0
   record: ^4.3.0
   just_audio: ^0.9.28
   voice_message_player: ^1.1.2
@@ -92,7 +91,6 @@ dependencies:
       url: https://github.com/myTrackerSDK/mytracker-flutter
       path: sdk/
       ref: main
-  flutter_contacts: ^1.1.7+1
   permission_handler: ^11.3.1
   menu_bar: ^0.5.3
   custom_pop_up_menu_fork: ^2.0.0

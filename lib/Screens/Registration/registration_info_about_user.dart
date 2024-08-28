@@ -150,7 +150,11 @@ class _RegisterButton extends StatefulWidget {
             ? MyTrackerGender.MALE
             : MyTrackerGender.FEMALE));
 
-    MyTracker.trackRegistrationEvent((userProfileData.id ?? -1).toString(), {});
+    MyTracker.trackRegistrationEvent(
+        (userProfileData.id ?? -1).toString(),
+        null, // vkConnectId or a proper value if available
+        {}    // The third argument, typically a Map or an additional parameter
+    );
 
     debugPrint("UPDATE USER PROFILE END");
   }
