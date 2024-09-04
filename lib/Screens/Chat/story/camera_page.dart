@@ -242,46 +242,7 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                 ),
                 // Bottom mode switcher
-                Container(
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () => _toggleMode(true),
-                        child: Text(
-                          'ФОТО',
-                          style: TextStyle(
-                            color: _isPhotoMode
-                                ? Colors.yellow
-                                : Colors.white,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 30),
-                      GestureDetector(
-                        onTap: () => _toggleMode(false),
-                        child: Text(
-                          'ВИДЕО',
-                          style: TextStyle(
-                            color: !_isPhotoMode
-                                ? Colors.yellow
-                                : Colors.white,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+
               ],
             ),
           ),
