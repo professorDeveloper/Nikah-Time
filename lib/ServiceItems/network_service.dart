@@ -39,7 +39,7 @@ class NetworkService {
     _dio.options.headers["accept"] = "application/json";
   }
 
-  final String baseUrl = "https://nikahtime.ru/api"; // story didn`t use socket  i think i will work with dev api
+  final String baseUrl = "https://dev.nikahtime.ru/api"; // story didn`t use socket  i think i will work with dev api
 //LOGIN
   final String login = "/login";
 //REGISTRATION
@@ -360,6 +360,19 @@ class NetworkService {
     return response;
   }
 
+
+  StoryStore(String accessToken,String content,String type) async {
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer $accessToken",
+      "Content-Type": "multipart/form-data"
+    };
+    var response= await http.post(Uri.parse("${NetworkService().baseUrl}/story/store"),
+      body: {"type": type, "content": content, },headers: headers);
+    return response;
+    
+  }
+
   UpdateuserInfo(String accessToken, Object? body) async {
     print(body);
 
@@ -394,6 +407,25 @@ class NetworkService {
     var response = await request.send();
     return response;
   }
+  UploadFileRequestStroy(
+      String accessToken, String imagePath, String fileType) async {
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer $accessToken",
+      "Content-Type": "multipart/form-data"
+    };
+    var request = http.MultipartRequest(
+        "POST", Uri.parse("${NetworkService().baseUrl}/storeStory/file"));
+    request.files.add(await http.MultipartFile.fromPath('file', imagePath));
+    request.fields['file'] = imagePath;
+    request.fields['fileType'] = fileType;
+    request.headers.addAll(headers);
+    print(request.fields);
+    var response = await request.send();
+    return response;
+  }
+
+
 
   Future<void> blockUser({required int userId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
