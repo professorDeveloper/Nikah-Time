@@ -34,7 +34,8 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
     if (croppedFile != null) {
       setState(() {
-        widget.imageFile = File(croppedFile.path); // Convert CroppedFile to File
+        widget.imageFile =
+            File(croppedFile.path); // Convert CroppedFile to File
       });
     }
   }
@@ -154,94 +155,175 @@ class _AddStoryPageState extends State<AddStoryPage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text('Story', style: TextStyle(color: Colors.blue)),
-      ),
-      body: Stack(
+      backgroundColor: Colors.black,
+      body: Column(
         children: [
-          Image.file(
-            widget.imageFile,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(
+                top: 50,
+              ),
+              height: double.infinity,
+              width: double.infinity,
+              color: Colors.yellow,
+              child: const Image(
+                image: NetworkImage(
+                  'https://e0.pxfuel.com/wallpapers/135/106/desktop-wallpaper-%DD%8B-sosuke-aizen-iphone.jpg',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          ..._stickers, // Display all stickers
-          ..._texts.map((textMap) {
-            int index = _texts.indexOf(textMap);
-            return Positioned(
-              top: textMap['top'],
-              left: textMap['left'],
-              child: GestureDetector(
-                onPanUpdate: (details) => _onTextDrag(index, details),
-                onLongPress: () {
-                  // Allow scaling and rotation if needed
-                },
-                child: Transform.rotate(
-                  angle: textMap['rotation'],
-                  child: Text(
-                    textMap['text'],
-                    style: TextStyle(
-                      color: textMap['color'],
-                      fontSize: textMap['size'],
+          Container(
+            height: 100,
+            color: Colors.transparent,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  height: 45,
+                  width: 45,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color.fromRGBO(0, 207, 144, 1),
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
                     ),
                   ),
                 ),
-              ),
-            );
-          }).toList(),
-        ],
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.green),
-                  onPressed: () {
-                    Navigator.pop(context);
+                const Icon(
+                  Icons.crop_rounded,
+                  color: Colors.white,
+                ),
+                const Icon(
+                  Icons.color_lens_rounded,
+                  color: Colors.white,
+                ),
+                const Icon(
+                  Icons.text_fields_rounded,
+                  color: Colors.white,
+                ),
+                InkWell(
+                  onTap: () {
+                    //AlertDialog
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text(
+                            'Вы уверены, что хотите опубликовать эту историю?',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Только для приятелей ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  right: 10,
+                                ),
+                                height: 25,
+                                width: 25,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 3,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Center(
+                                    child: CircleAvatar(
+                                      radius: 5,
+                                      backgroundColor:
+                                      Color.fromRGBO(0, 207, 144, 1),
+                                    )),
+                              )
+                            ],
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    'Отмена',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 40,
+                                  width: 140,
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromRGBO(0, 207, 144, 1),
+                                    borderRadius: BorderRadius.circular(11),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'Далее',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
-                ),
-                SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(Icons.crop, color: Colors.white),
-                  onPressed: _cropImage,
-                ),
-                SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(Icons.text_fields, color: Colors.white),
-                  onPressed: _addText,
-                ),
-                SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(Icons.sticky_note_2, color: Colors.white),
-                  onPressed: _addSticker,
+                  child: Container(
+                    height: 45,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(0, 207, 144, 1),
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Далее',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
-                // Next action
-              },
-              child: Text('Далее', style: TextStyle(fontSize: 16)),
-            ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
